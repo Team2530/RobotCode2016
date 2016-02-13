@@ -13,8 +13,11 @@ Then create a branch for your code (in your github command line tool)
 ```sh
 git branch [insert-your-name]
 ```
+Copy the files from RobotCode2016/code/ into your workspace/project/src.
 
-Don't forget to add files to track
+When you are done, copy the files from workspace/project/src back to repository path/code/.
+
+Don't forget to add new files to track
 
 ```sh
 git add [relative-path-to-filename]
@@ -23,7 +26,7 @@ git add [relative-path-to-filename]
 Once you have tested your changes, lets get them committed and pushed:
 
 ```sh
-git commit (press i in the editor, type what you changed, then hit ESC. Then type :w :q) [This is what text editors were long before microsoft word or notepad.]
+git commit -m "[Insert-comment-about-update-here]"
 git push origin [insert-your-name]
 ```
 
@@ -34,3 +37,6 @@ http://www.pdocs.kauailabs.com/navx-mxp/software/roborio-libraries/c/
 
 Grip Software Link
 https://github.com/WPIRoboticsProjects/GRIP
+
+
+
