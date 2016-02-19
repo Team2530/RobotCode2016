@@ -2,7 +2,6 @@
 #include "DriveTrain.h"
 #include "Autonomous.h"
 #include "Camera.h"
-#include "NavX.h"
 #include "Shooter.h"
 #include "AHRS.h"
 

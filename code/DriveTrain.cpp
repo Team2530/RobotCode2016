@@ -21,8 +21,8 @@ DriveTrain::DriveTrain() {
 
 		leftEncoder = new Encoder (2,3, true, CounterBase:: k4X); //check ports
 		rightEncoder = new Encoder (0,1, true, CounterBase:: k4X);
-		leftEncoder->SetDistancePerPulse((-1*4*3.14159)/360); //check circumference/(pulses per revolution)
-		rightEncoder->SetDistancePerPulse((1*4*3.14159)/360);
+		leftEncoder->SetDistancePerPulse((-1*3.14159*8)/432); //check circumference/(pulses per revolution)
+		rightEncoder->SetDistancePerPulse((3.14159*8)/630);
 
 		leftStick = new Joystick(0);
 		rightStick= new Joystick(1);
@@ -61,12 +61,8 @@ DriveTrain::DriveTrain() {
 
 
 		float throttle = getThrottle(.4);
-		if (leftStick->GetRawButton(1)){
 			myRobot->TankDrive(leftStick->GetY()*throttle, rightStick->GetY()*throttle, true);
-		}
-		else if (rightStick->GetRawButton(1)){
-			myRobot->TankDrive(leftStick->GetY()*throttle*-1, rightStick->GetY()*throttle*-1, true);
-		}
+
 		if (xBox->GetRawButton(2)){
 			shooter->shoot();
 		}
@@ -78,8 +74,8 @@ DriveTrain::DriveTrain() {
 		}
 
 		shooter->angleBall(xBox->GetRawAxis(5));
-		SmartDashboard::PutNumber("left distance", leftEncoder->GetDistance());
-		SmartDashboard::PutNumber("right distance", rightEncoder->GetDistance());
+		SmartDashboard::PutNumber("LD", leftEncoder->GetDistance()); //-432
+		SmartDashboard::PutNumber("RD", rightEncoder->GetDistance()); //630
 		SmartDashboard::PutNumber("angleTele", ahrs->GetAngle());
 		//OneStick: myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist(),true);
 	}
@@ -99,32 +95,59 @@ DriveTrain::DriveTrain() {
 		if (step==2){
 			double changeInAngle= ((ahrs->GetAngle()-180)-angleStart);
 			if (leftEncoder->GetDistance()< distanceInches && leftEncoder->GetDistance()> -distanceInches && rightEncoder->GetDistance()< distanceInches && rightEncoder->GetDistance()>-distanceInches){
-				myRobot->Drive(speed, -changeInAngle/80);
+				myRobot->Drive(-speed, changeInAngle/80);
 			}
 			else{
 				myRobot->ArcadeDrive(0.0,0.0,true);
 			}
 			SmartDashboard::PutNumber("left distance Auto", leftEncoder->GetDistance());
 			SmartDashboard::PutNumber("right distance Auto", rightEncoder->GetDistance());
-			SmartDashboard::PutNumber("changeInAngle", changeInAngle/40);
+			SmartDashboard::PutNumber("changeInAngle", changeInAngle/80);
 		}
 	}
 
 	void DriveTrain::turnRight(double angle){
+
 		if (step==1){
-					ahrs->Reset();
-					myRobot->ArcadeDrive(0.0,0.0,true);
-					step++;
+			startAngle= ahrs->GetAngle();
+			stopAngle= startAngle+angle;
+			if (stopAngle>360){
+				stopAngle-=360;
+			}
+			step++;
 		}
 		if (step==2){
-			if (((ahrs->GetAngle()-180))<angle){
-				myRobot->Drive(.4, 1.0);
-		}
+			angleTheta= stopAngle-ahrs->GetAngle();
+			if (angleTheta<=0){
+				angleTheta= (stopAngle+360-ahrs->GetAngle());
+			}
+			speed =angleTheta/(1.2*angle);
+			if (speed>.3){
+				speed=.3;
+			}
+
+			if (startAngle<stopAngle){
+				if (ahrs->GetAngle()<stopAngle){
+					myRobot->Drive(speed,1);
+				}
+				else{
+					myRobot->ArcadeDrive(0.0,0,true);
+				}
+			}
 			else{
-				myRobot->ArcadeDrive(0.0,0.0,true);
+				if (ahrs->GetAngle()>startAngle||ahrs->GetAngle()<stopAngle){
+					myRobot->Drive(speed,1);
+				}
+				else{
+					myRobot->ArcadeDrive(0,0,true);
+				}
 			}
-			}
+
+		}
 		SmartDashboard::PutNumber("Current Angle", ahrs->GetAngle());
+		SmartDashboard::PutNumber("StartAngle", startAngle);
+		SmartDashboard::PutNumber("Stop Angle", stopAngle);
+
 	}
 /*
 	PIDController* DriveTrain::getController(PIDOutput* output){

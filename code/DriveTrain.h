@@ -32,6 +32,11 @@ class DriveTrain {
 	int step;
 	double angleStart;
 	double currentAngle;
+	double startAngle;
+	double stopAngle;
+	double speed;
+	double angleTheta;
+
 public:
 	DriveTrain();
 

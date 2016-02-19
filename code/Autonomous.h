@@ -27,7 +27,9 @@ public:
 	void doNothing();
 	void startTimer();
 	void driveOverDefense();
+	void turnRight(double);
 	bool attackTower(std::string);
+	double getTime();
 };
 
 
