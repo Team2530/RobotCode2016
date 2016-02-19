@@ -119,13 +119,15 @@ DriveTrain::DriveTrain() {
 		if (step==2){
 			angleTheta= stopAngle-ahrs->GetAngle();
 			if (angleTheta<=0){
-				angleTheta= (stopAngle+360-ahrs->GetAngle());
+				angleTheta= (stopAngle+360);
 			}
 			speed =angleTheta/(1.2*angle);
 			if (speed>.3){
 				speed=.3;
 			}
-
+			if (speed<.1){
+				speed=.1;
+			}
 			if (startAngle<stopAngle){
 				if (ahrs->GetAngle()<stopAngle){
 					myRobot->Drive(speed,1);

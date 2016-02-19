@@ -26,8 +26,8 @@ Autonomous::Autonomous(DriveTrain *dt) {
 		robotd->DriveSet(0.0,0.0);
 	}
 	void Autonomous::driveOverDefense(){
-		robotd->driveDistance(60, .3);
-		//robotd->turnRight(90);
+		//robotd->driveDistance(60, .3);
+		robotd->turnRight(90);
 
 	}
 	bool Autonomous::attackTower(std::string position){
