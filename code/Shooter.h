@@ -14,7 +14,7 @@ class Shooter {
 	TalonSRX *rightShooter;
 	TalonSRX *leftLifter;
 	TalonSRX *rightLifter;
-
+	Encoder *shooterEncoder;
 
 public:
 	Shooter();
@@ -22,6 +22,9 @@ public:
 	void takeInBall();
 	void stopMotors();
 	void angleBall(float);
+	float getAngle();
+	void setAngle(float);
+
 };
 
 

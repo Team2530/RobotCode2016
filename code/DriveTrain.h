@@ -16,6 +16,8 @@ class DriveTrain {
 	VictorSP *vic2;
 	VictorSP *vic3;
 	VictorSP *vic4;
+	Relay *spike;
+	Servo *servo;
 
 	PIDController *turnController;
 	Joystick *leftStick;
@@ -30,12 +32,14 @@ class DriveTrain {
 
 	AHRS *ahrs;
 	int step;
+
 	double angleStart;
 	double currentAngle;
 	double startAngle;
 	double stopAngle;
 	double speed;
 	double angleTheta;
+	double constant;
 
 public:
 	DriveTrain();
@@ -50,7 +54,8 @@ public:
 
 	double getChangeTheta();
 	void turnRight(double);
-	PIDController* getController(PIDOutput*);
+	void turnLeft(double);
+
 };
 
 #endif /* SRC_DRIVETRAIN_H_ */

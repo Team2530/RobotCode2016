@@ -10,15 +10,9 @@
 
 
 Autonomous::Autonomous(DriveTrain *dt) {
-	chooser = new SendableChooser();
-	chooser->AddDefault(dN, (void*)&dN);
-
-	SmartDashboard::PutData("Auto Modes", chooser);
-	autoSelected = *((std::string*)chooser->GetSelected());
-	std::string autoSelected = SmartDashboard::GetString("Auto Selector", dN);
-	std::cout << "Auto selected: " << autoSelected << std::endl;
 	robotd=dt;
 	timer= new Timer();
+	step=1;
 
 
 }
@@ -26,9 +20,55 @@ Autonomous::Autonomous(DriveTrain *dt) {
 		robotd->DriveSet(0.0,0.0);
 	}
 	void Autonomous::driveOverDefense(){
-		//robotd->driveDistance(60, .3);
-		robotd->turnRight(90);
+		robotd->driveDistance(80,.5);
+		/*if (autoSelected==autoNameLeft){
+			if (step==1){
+				isDone=robotd->driveDistance(60,.5);
+				if (isDone){
+					isDone=false;
+					step++;
+				}
+			}
+			else if (step==2){
+				isDone=robotd->turnRight(45);
+				if (isDone){
+					isDone=false;
+					step++;
+				}
+			}
+			//drive more or shoot
 
+		}
+		else if (autoSelected==autoNameRight){
+			if (step==1){
+				isDone=robotd->driveDistance(80,5);
+				if (isDone){
+					isDone=false;
+					step++;
+				}
+			}
+			//drive more or shoot
+		}
+		else{
+			if (autoSelected==autoNameLeft){
+				if (step==1){
+					isDone=robotd->driveDistance(60,.5);
+					if (isDone){
+						isDone=false;
+						step++;
+					}
+				}
+				else if (step==2){
+					isDone=robotd->turnLeft(90);
+					if (isDone){
+						isDone=false;
+						step++;
+					}
+				}
+						//drive more or shoot
+			}
+
+		}*/
 	}
 	bool Autonomous::attackTower(std::string position){
 		//Angle/drive based on position

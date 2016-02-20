@@ -10,11 +10,14 @@
 
 
 Shooter::Shooter() {
+	//check ports
 	leftShooter= new TalonSRX(4);
 	rightShooter= new TalonSRX(5);
 
 	leftLifter= new TalonSRX(6);
 	rightLifter= new TalonSRX(7);
+	shooterEncoder= new Encoder(5,6); //check ports
+	shooterEncoder->SetDistancePerPulse(1);// take ticks from 90-0, div 90
 
 }
 
@@ -35,4 +38,17 @@ void Shooter::stopMotors(){
 void Shooter::angleBall(float lifterSpeed){
 	leftLifter->Set(lifterSpeed);
 	rightLifter->Set(lifterSpeed);
+}
+
+void Shooter::setAngle(float angle){
+	if (shooterEncoder->GetDistance()<angle){
+		angleBall(.6); //check power
+	}
+	else{
+		angleBall(0);
+	}
+}
+
+float Shooter::getAngle(){
+	return 0.0; //encoder->Distance
 }

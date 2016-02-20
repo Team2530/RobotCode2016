@@ -1,7 +1,6 @@
 #include "WPILib.h"
 #include "DriveTrain.h"
 #include "Autonomous.h"
-#include "Camera.h"
 #include "Shooter.h"
 #include "AHRS.h"
 
@@ -45,7 +44,7 @@ private:
 	void AutonomousInit(){
 
 
-		Drive->TeleopInit();
+		Drive->AutonomousInit();
 		autonomous->startTimer();
 
 	}

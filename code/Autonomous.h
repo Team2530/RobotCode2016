@@ -12,15 +12,14 @@
 
 class Autonomous {
 	SendableChooser *chooser;
-	const std::string dN = "DN";
-	const std::string position1 = "P1";
-	const std::string position2 = "P2";
-	const std::string position3 = "P3";
-	const std::string position4 = "P4";
-	const std::string position5 = "P5";
-	DriveTrain *robotd;
+	const std::string autoNameMiddle = "Middle";
+	const std::string autoNameLeft = "Left";
+	const std::string autoNameRight = "Right";
 	std::string autoSelected;
+	DriveTrain *robotd;
+	int step;
 	Timer *timer;
+	bool isDone;
 
 public:
 	Autonomous(DriveTrain*);
