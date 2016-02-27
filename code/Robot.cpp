@@ -4,6 +4,15 @@
 #include "Shooter.h"
 #include "AHRS.h"
 
+
+
+/*
+ * MAIN CLASS FOR DRIVING ROBOT
+ * ALL FUNCTIONS ARE INHERITED
+ * IMPLEMENTS ITERATIVEROBOT INTERFACE
+ * INCLUDES ALL OTHER OBJECTS
+ */
+
 class Robot: public IterativeRobot{
 private:
 	LiveWindow *lw = LiveWindow::GetInstance();

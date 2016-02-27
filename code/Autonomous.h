@@ -12,9 +12,10 @@
 
 class Autonomous {
 	SendableChooser *chooser;
-	const std::string autoNameMiddle = "Middle";
-	const std::string autoNameLeft = "Left";
-	const std::string autoNameRight = "Right";
+	const std::string autoNamedN = "Do Nothing";
+	const std::string autoNameLeft = "Left Low Goal";
+	const std::string autoNameRight = "Right Low Goal";
+	const std::string autoNameOver= "Drive Over Defense";
 	std::string autoSelected;
 	DriveTrain *robotd;
 	int step;

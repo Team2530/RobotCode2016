@@ -30,6 +30,7 @@ class DriveTrain {
 	Encoder *rightEncoder;
 	Shooter *shooter;
 
+
 	AHRS *ahrs;
 	int step;
 
@@ -40,6 +41,7 @@ class DriveTrain {
 	double speed;
 	double angleTheta;
 	double constant;
+	bool done;
 
 public:
 	DriveTrain();
@@ -50,11 +52,13 @@ public:
 	void AutonomousInit();
 	void TeleopInit();
 	void Drive();
-	void driveDistance(int,float);
+	bool driveDistance(int,float);
 
 	double getChangeTheta();
-	void turnRight(double);
+	bool turnRight(double);
 	void turnLeft(double);
+	void setServo(float);
+	void driveShoot(double);
 
 };
 

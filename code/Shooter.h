@@ -15,15 +15,21 @@ class Shooter {
 	TalonSRX *leftLifter;
 	TalonSRX *rightLifter;
 	Encoder *shooterEncoder;
+	DigitalInput *low1;
+	DigitalInput *low2;
+	DigitalInput *high1;
+	DigitalInput *high2;
 
 public:
 	Shooter();
-	void shoot();
+	void shoot(float);
 	void takeInBall();
 	void stopMotors();
 	void angleBall(float);
 	float getAngle();
 	void setAngle(float);
+	bool lowStop(bool, bool);
+	bool highStop(bool, bool);
 
 };
 

@@ -8,19 +8,52 @@
 #include <Autonomous.h>
 
 
-
+//instantiates robot drive, timer, step/bool algorithm, and sendable chooser
 Autonomous::Autonomous(DriveTrain *dt) {
 	robotd=dt;
 	timer= new Timer();
 	step=1;
+	isDone=false;
+	/*chooser = new SendableChooser();
+	chooser->AddObject(autoNamedN, (void*)&autoNamedN);
+	chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
+	chooser->AddObject(autoNameRight, (void*)&autoNameRight);
+	chooser->AddObject(autoNameOver, (void*)&autoNameOver);
+	SmartDashboard::PutData("Auto Modes", chooser);
+	autoSelected= *((std::string*)chooser->GetSelected());
+	std::cout << "Auto selected: " << autoSelected << std::endl;
+*/
 
-
-}
+} //autonomous function to do nothing
 	void Autonomous::doNothing(){
 		robotd->DriveSet(0.0,0.0);
-	}
+	} //drives over a defense
 	void Autonomous::driveOverDefense(){
-		robotd->driveDistance(80,.5);
+		robotd->driveDistance(130,.5);
+		/*if (step==1){
+			isDone= robotd->driveDistance(96,.5);
+			if (isDone){
+				step++;
+				isDone=false;
+			}
+		}
+		else if (step==2){
+			isDone= robotd->turnRight(60);
+			if (isDone){
+				step++;
+				isDone=false;
+			}
+		}
+		//make sure arm is lowered first
+
+		else if (step==3){
+			robotd->setServo(130);
+			robotd->driveShoot(1.0);
+		}*/
+
+
+		//robotd->turnRight(90);
+		//robotd->turnLeft(90); //needs work
 		/*if (autoSelected==autoNameLeft){
 			if (step==1){
 				isDone=robotd->driveDistance(60,.5);
@@ -69,11 +102,12 @@ Autonomous::Autonomous(DriveTrain *dt) {
 			}
 
 		}*/
-	}
+	}//drives towards tower based on where robot is placed
 	bool Autonomous::attackTower(std::string position){
 		//Angle/drive based on position
 		return false;
 	}
+	//start timer function for using time outside of autonomous.cpp
 	void Autonomous::startTimer(){
 		timer->Start();
 	}
