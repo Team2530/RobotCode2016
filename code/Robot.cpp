@@ -3,6 +3,7 @@
 #include "Autonomous.h"
 #include "Shooter.h"
 #include "AHRS.h"
+#include "Camera.h"
 
 
 
@@ -17,14 +18,21 @@ class Robot: public IterativeRobot{
 private:
 	LiveWindow *lw = LiveWindow::GetInstance();
 	SendableChooser *chooser;
+	const std::string autoNamedN = "Do Nothing";
+	const std::string autoNameLeft = "Left Low Goal";
+	const std::string autoNameRight = "Right Low Goal";
+	const std::string autoNameOver= "Drive Over Defense";
+	std::string autoSelected;
 
 
+
+	Camera *camera;
 	Autonomous *autonomous;
 	DriveTrain *Drive;
 
 
 
-	int step=0;
+
 
 
 
@@ -32,12 +40,15 @@ private:
 
 
 		Drive= new DriveTrain();
-		SmartDashboard::PutNumber("Proportional", 0);
-		SmartDashboard::PutNumber("Integral", 0);
-		SmartDashboard::PutNumber("Derivative", 0);
-
+		chooser = new SendableChooser();
+		chooser->AddObject(autoNamedN, (void*)&autoNamedN);
+		chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
+		chooser->AddObject(autoNameRight, (void*)&autoNameRight);
+		chooser->AddObject(autoNameOver, (void*)&autoNameOver);
+		SmartDashboard::PutData("Auto Modes", chooser);
 
 		autonomous = new Autonomous(Drive);
+		camera = new Camera();
 	}
 
 
@@ -51,7 +62,7 @@ private:
 	 * If using the SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	void AutonomousInit(){
-
+		autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
 
 		Drive->AutonomousInit();
 		autonomous->startTimer();
@@ -59,7 +70,8 @@ private:
 	}
 
 	void AutonomousPeriodic(){
-			autonomous->driveOverDefense();
+			//autonomous->driveOverDefense();
+		SmartDashboard::PutString("selected", autoSelected);
 
 	}
 
@@ -69,7 +81,7 @@ private:
 
 	void TeleopPeriodic(){
 		Drive->Drive();
-
+		camera->cameraTeleop();
 	}
 
 	void TestPeriodic(){

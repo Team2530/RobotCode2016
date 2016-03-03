@@ -14,15 +14,7 @@ Autonomous::Autonomous(DriveTrain *dt) {
 	timer= new Timer();
 	step=1;
 	isDone=false;
-	/*chooser = new SendableChooser();
-	chooser->AddObject(autoNamedN, (void*)&autoNamedN);
-	chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
-	chooser->AddObject(autoNameRight, (void*)&autoNameRight);
-	chooser->AddObject(autoNameOver, (void*)&autoNameOver);
-	SmartDashboard::PutData("Auto Modes", chooser);
-	autoSelected= *((std::string*)chooser->GetSelected());
-	std::cout << "Auto selected: " << autoSelected << std::endl;
-*/
+
 
 } //autonomous function to do nothing
 	void Autonomous::doNothing(){
@@ -110,4 +102,11 @@ Autonomous::Autonomous(DriveTrain *dt) {
 	//start timer function for using time outside of autonomous.cpp
 	void Autonomous::startTimer(){
 		timer->Start();
+	}
+	bool Autonomous::nextStep(bool done){
+		if (done){
+			step++;
+			done=false;
+		}
+		return done;
 	}

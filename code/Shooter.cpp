@@ -61,6 +61,7 @@ void Shooter::angleBall(float lifterSpeed){
 	rightLifter->Set(lifterSpeed);
 	SmartDashboard::PutNumber("angle", shooterEncoder->GetDistance());
 	}
+	SmartDashboard::PutNumber("lifterpower", lifterSpeed);
 }
 
 
