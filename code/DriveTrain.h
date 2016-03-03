@@ -57,7 +57,7 @@ public:
 
 	double getChangeTheta();
 	bool turnRight(double);
-	void turnLeft(double);
+	bool turnLeft(double);
 	void setServo(float);
 	void driveShoot(double);
 

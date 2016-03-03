@@ -16,10 +16,10 @@ class Autonomous {
 	int step;
 	Timer *timer;
 	bool isDone;
-
+	std::string autoMode;
 
 public:
-	Autonomous(DriveTrain*);
+	Autonomous(DriveTrain*, std::string);
 	void doNothing();
 	void startTimer();
 	void driveOverDefense();

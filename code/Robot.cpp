@@ -47,7 +47,7 @@ private:
 		chooser->AddObject(autoNameOver, (void*)&autoNameOver);
 		SmartDashboard::PutData("Auto Modes", chooser);
 
-		autonomous = new Autonomous(Drive);
+
 		camera = new Camera();
 	}
 
@@ -63,6 +63,7 @@ private:
 	 */
 	void AutonomousInit(){
 		autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
+		autonomous = new Autonomous(Drive, *((std::string*)chooser->GetSelected()));
 
 		Drive->AutonomousInit();
 		autonomous->startTimer();

@@ -210,7 +210,7 @@ DriveTrain::DriveTrain() {
 	}
 
 	//turn left until stop angle is reached; slow down as angle approaches
-	void DriveTrain::turnLeft(double angle){
+	bool DriveTrain::turnLeft(double angle){
 		if (step==1){
 					startAngle= ahrs->GetAngle();
 					stopAngle= startAngle-angle;
@@ -237,7 +237,7 @@ DriveTrain::DriveTrain() {
 					}
 					else{
 						myRobot->ArcadeDrive(0,0,true);
-
+						done = true;
 					}
 				}
 				else{
@@ -246,13 +246,14 @@ DriveTrain::DriveTrain() {
 					}
 					else{
 						myRobot->ArcadeDrive(0,0,true);
-
+						done=true;
 					}
 				}
 		}
 		SmartDashboard::PutNumber("Current Angle2", ahrs->GetAngle());
 		SmartDashboard::PutNumber("StartAngle2", startAngle);
 		SmartDashboard::PutNumber("Stop Angle2", stopAngle);
+		return done;
 
 	}
 	//shoot ball at specified speed; used for other functions in DriveTrain.cpp
