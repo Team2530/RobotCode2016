@@ -60,10 +60,10 @@ double Camera::getTargetDistance(std::vector<double> areas){
 
 double Camera::getTargetAngle( int contoursIndex){
 		if (contoursIndex == -1){
-				return -1;
+				return 999;
 		}
 		double centerX = getTargetCenterX(contoursIndex);
-		double TargetAngle = (atan((centerX-160)/(160 * sqrt(3)))) * 57.29577951;
+		double TargetAngle = (atan((centerX-160)/(160 * sqrt(3)))) * 57.29577951; //error from left side
 		return TargetAngle;
 }
 
@@ -75,4 +75,13 @@ void Camera::cameraTeleop(){
 		int contoursIndex = getTargetIndex(areas);
 		SmartDashboard::PutNumber("Distance", getTargetDistance(areas));
 		SmartDashboard::PutNumber("TargetAngle", getTargetAngle(contoursIndex));
+}
+
+double Camera::getDis(){
+	return getTargetDistance(areas);
+}
+
+double Camera::getAng(){
+	int contoursIndex = getTargetIndex(areas);
+	return getTargetAngle(contoursIndex);
 }

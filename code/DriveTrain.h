@@ -7,6 +7,7 @@
 #include "WPILib.h"
 #include "AHRS.h"
 #include "Shooter.h"
+#include "Camera.h"
 #ifndef SRC_DRIVETRAIN_H_
 #define SRC_DRIVETRAIN_H_
 
@@ -29,7 +30,7 @@ class DriveTrain {
 	Encoder *leftEncoder;
 	Encoder *rightEncoder;
 	Shooter *shooter;
-
+	Camera *camera;
 
 	AHRS *ahrs;
 	int step;
@@ -60,7 +61,8 @@ public:
 	bool turnLeft(double);
 	void setServo(float);
 	void driveShoot(double);
-
+	double getTargetD();
+	double getTargetA();
 };
 
 #endif /* SRC_DRIVETRAIN_H_ */

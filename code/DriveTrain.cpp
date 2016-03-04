@@ -15,7 +15,7 @@ DriveTrain::DriveTrain() {
 	//=new Victor(port) for kitbot, SP for actual bot
 		vic1 = new VictorSP(3);
 		vic2= new VictorSP(2);
-
+		camera = new Camera();
 
 		vic3= new VictorSP(1);
 		vic4= new VictorSP(0);
@@ -108,7 +108,7 @@ DriveTrain::DriveTrain() {
 		else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kAbutton)){
 			servo->Set(130);
 		}
-
+		camera->cameraTeleop();
 		//lift boulder at left analog stick speed
 		shooter->angleBall(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSYAxis));
 		SmartDashboard::PutNumber("LD", leftEncoder->GetDistance()); //-432
@@ -259,4 +259,12 @@ DriveTrain::DriveTrain() {
 	//shoot ball at specified speed; used for other functions in DriveTrain.cpp
 	void DriveTrain::driveShoot(double speed){
 		shooter->shoot(speed);
+	}
+
+	double DriveTrain::getTargetD(){
+		return camera->getDis();
+	}
+
+	double DriveTrain::getTargetA(){
+		return camera->getAng();
 	}

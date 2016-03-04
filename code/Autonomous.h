@@ -17,6 +17,8 @@ class Autonomous {
 	Timer *timer;
 	bool isDone;
 	std::string autoMode;
+	double xangle;
+	double imageDistance;
 
 public:
 	Autonomous(DriveTrain*, std::string);

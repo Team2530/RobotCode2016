@@ -45,6 +45,8 @@ public:
 	double getTargetDistance(std::vector<double>);
 	double getTargetAngle(int);
 	void cameraTeleop();
+	double getDis();
+	double getAng();
 };
 
 

@@ -22,18 +22,15 @@ private:
 	const std::string autoNameLeft = "Left Low Goal";
 	const std::string autoNameRight = "Right Low Goal";
 	const std::string autoNameOver= "Drive Over Defense";
+	const std::string autoNameP1= "P1 High";
+	const std::string autoNameP2= "P2 High";
+	const std::string autoNameP3= "P3 High";
+	const std::string autoNameP4= "P4 High";
+	const std::string autoNameP5= "P5 High";
 	std::string autoSelected;
 
-
-
-	Camera *camera;
 	Autonomous *autonomous;
 	DriveTrain *Drive;
-
-
-
-
-
 
 
 	void RobotInit(){
@@ -45,10 +42,14 @@ private:
 		chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
 		chooser->AddObject(autoNameRight, (void*)&autoNameRight);
 		chooser->AddObject(autoNameOver, (void*)&autoNameOver);
+		chooser->AddObject(autoNameP1, (void*)&autoNameP1);
+		chooser->AddObject(autoNameP2, (void*)&autoNameP2);
+		chooser->AddObject(autoNameP3, (void*)&autoNameP3);
+		chooser->AddObject(autoNameP4, (void*)&autoNameP4);
+		chooser->AddObject(autoNameP5, (void*)&autoNameP5);
 		SmartDashboard::PutData("Auto Modes", chooser);
 
 
-		camera = new Camera();
 	}
 
 
@@ -82,7 +83,7 @@ private:
 
 	void TeleopPeriodic(){
 		Drive->Drive();
-		camera->cameraTeleop();
+
 	}
 
 	void TestPeriodic(){

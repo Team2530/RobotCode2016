@@ -88,6 +88,187 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 				robotd->driveShoot(1.0);
 			}
 		}
+		else if (autoMode.compare("P1 High")==0){
+			/*high goal code:
+			* drives a little
+			* lowers arm
+			* drives over obstacle
+			* turns towards goal //maybe drive even more before doing this???
+			* drives 5 feet from goal
+			* raises arm to specified angle
+			* shoots boulder
+			*/
+			xangle= robotd->getTargetA(); //check function and add pointer to variable
+			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
+				if (step==1){
+					isDone= robotd->driveDistance(20,.6); //check distance
+					nextStep(isDone);
+			}
+			else if (step==2){
+			//isDone= robotd->lowerShooter(20);
+				nextStep(isDone);
+			}
+			else if (step==4){
+				isDone= robotd->driveDistance(100,.6);
+				nextStep(isDone);
+			}
+			else if (step==5){
+				isDone=robotd->turnRight(xangle); //or turn left based on position
+				nextStep(isDone);
+			}
+			else if (step==6){
+				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+				nextStep(isDone);
+			}
+			else if (step==7){
+			//isDone= robotd->raiseShooter(45); //check angle
+				nextStep(isDone);
+			}
+			else if (step==8){
+				robotd->setServo(130);
+				robotd->driveShoot(1.0);
+			}
+
+		}
+
+		else if (autoMode.compare("P2 High")==0){
+
+			xangle= robotd->getTargetA(); //check function and add pointer to variable
+			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
+			if (step==1){
+					isDone= robotd->driveDistance(20,.6); //check distance
+					nextStep(isDone);
+			}
+			else if (step==2){
+			//isDone= robotd->lowerShooter(20);
+				nextStep(isDone);
+			}
+			else if (step==4){
+				isDone= robotd->driveDistance(100,.6);
+				nextStep(isDone);
+			}
+			else if (step==5){
+				isDone=robotd->turnRight(xangle); //or turn left based on position
+				nextStep(isDone);
+			}
+			else if (step==6){
+				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+				nextStep(isDone);
+			}
+			else if (step==7){
+			//isDone= robotd->raiseShooter(45); //check angle
+				nextStep(isDone);
+			}
+			else if (step==8){
+				robotd->setServo(130);
+				robotd->driveShoot(1.0);
+			}
+
+		}
+
+		else if (autoMode.compare("P3 High")==0){
+
+			xangle= robotd->getTargetA(); //check function and add pointer to variable
+			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
+			if (step==1){
+					isDone= robotd->driveDistance(20,.6); //check distance
+					nextStep(isDone);
+			}
+			else if (step==2){
+			//isDone= robotd->lowerShooter(20);
+				nextStep(isDone);
+			}
+			else if (step==4){
+				isDone= robotd->driveDistance(100,.6);
+				nextStep(isDone);
+			}
+			else if (step==5){
+				isDone=robotd->turnRight(xangle); //or turn left based on position
+				nextStep(isDone);
+			}
+			else if (step==6){
+				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+				nextStep(isDone);
+			}
+			else if (step==7){
+			//isDone= robotd->raiseShooter(45); //check angle
+				nextStep(isDone);
+			}
+			else if (step==8){
+				robotd->setServo(130);
+				robotd->driveShoot(1.0);
+			}
+
+		}
+		else if (autoMode.compare("P4 High")==0){
+
+			xangle= robotd->getTargetA(); //check function and add pointer to variable
+			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
+			if (step==1){
+					isDone= robotd->driveDistance(20,.6); //check distance
+					nextStep(isDone);
+			}
+			else if (step==2){
+			//isDone= robotd->lowerShooter(20);
+				nextStep(isDone);
+			}
+			else if (step==4){
+				isDone= robotd->driveDistance(100,.6);
+				nextStep(isDone);
+			}
+			else if (step==5){
+				isDone=robotd->turnLeft(xangle); //or turn left based on position
+				nextStep(isDone);
+			}
+			else if (step==6){
+				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+				nextStep(isDone);
+			}
+			else if (step==7){
+			//isDone= robotd->raiseShooter(45); //check angle
+				nextStep(isDone);
+			}
+			else if (step==8){
+				robotd->setServo(130);
+				robotd->driveShoot(1.0);
+			}
+
+		}
+		else if (autoMode.compare("P5 High")==0){
+
+			xangle= robotd->getTargetA(); //check function and add pointer to variable
+			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
+			if (step==1){
+					isDone= robotd->driveDistance(20,.6); //check distance
+					nextStep(isDone);
+			}
+			else if (step==2){
+			//isDone= robotd->lowerShooter(20);
+				nextStep(isDone);
+			}
+			else if (step==4){
+				isDone= robotd->driveDistance(100,.6);
+				nextStep(isDone);
+			}
+			else if (step==5){
+				isDone=robotd->turnLeft(xangle); //or turn left based on position
+				nextStep(isDone);
+			}
+			else if (step==6){
+				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+				nextStep(isDone);
+			}
+			else if (step==7){
+			//isDone= robotd->raiseShooter(45); //check angle
+				nextStep(isDone);
+			}
+			else if (step==8){
+				robotd->setServo(130);
+				robotd->driveShoot(1.0);
+			}
+
+		}
+
 
 
 	}//drives towards tower based on where robot is placed
