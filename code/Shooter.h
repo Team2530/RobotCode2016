@@ -5,6 +5,7 @@
  *      Authors: Eric and Jack
  */
 #include "WPILib.h"
+#include "ControllerConstants.h"
 #ifndef SRC_SHOOTER_H_
 #define SRC_SHOOTER_H_
 
@@ -20,6 +21,15 @@ class Shooter {
 	DigitalInput *high1;
 	DigitalInput *high2;
 
+	double kDefaultEncoderPulseVal=1;
+	double kTakeInSpeed=.4f;
+	double kStopMotors= 0;
+	double kLifterSpeedCap = .2;
+	double kLifterSpeedMin =.075;
+	double kAngleErrorMargin= 2.0;
+	double kEncoderAngleVal= .3515625;
+	double kAngleBallSpeed= .1;
+
 public:
 	Shooter();
 	void shoot(float);
@@ -27,7 +37,7 @@ public:
 	void stopMotors();
 	void angleBall(float);
 	float getAngle();
-	void setAngle(float);
+	bool setAngle(double);
 	bool lowStop(bool, bool);
 	bool highStop(bool, bool);
 

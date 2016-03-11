@@ -44,6 +44,23 @@ class DriveTrain {
 	double constant;
 	bool done;
 
+	double kLeftDistancePerPulse= -1*3.14159*8/432;
+	double kRightDistancePerPulse= 3.14159*8/630;
+	double kThrottleMinimum = .4;
+	double kServoRest=0;
+	double kServoShoot=130;
+	double kshoot100=1.0;
+	double kOppositeAngle =180;
+	double kChangeInAngleConstant= 80;
+	double kFullCircle= 360;
+	double kAngleThetaConstant= 1.2;
+	double kTurnSpeedCap=.3;
+	double kTurnSpeedMin=.1;
+	double kTriggerThreshold=.1;
+	double kTurnRightFullDegrees= 1.0;
+	double kNoAngle=0.0;
+	double kNoPower=0.0;
+	int kNoDistance=0;
 
 public:
 	DriveTrain();
@@ -63,6 +80,7 @@ public:
 	void driveShoot(double);
 	double getTargetD();
 	double getTargetA();
+	bool setAngle(double);
 };
 
 #endif /* SRC_DRIVETRAIN_H_ */

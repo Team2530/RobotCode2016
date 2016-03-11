@@ -34,7 +34,22 @@ class Camera {
 	std::vector<double> widths;
 	std::vector<double> areas;
 	std::vector<double> centerXs;
+	std::vector<double> heights;
+	double focalLength;
 
+	double kConstantDistance=162;
+	double kActualHeight =14;
+	double kConstantPixelHeight=37;
+	float kMaxArea=0;
+    int kMaxAreaIndex =-1;
+   	int kI=0;
+   	int kContoursIndexCheck=-1;
+   	int kHeightWidth=0;
+   	int kError= -2;
+   	double kAngleError= 999;
+   	double kHalfPixelWidth= 160;
+   	double kRootConstant= 3;
+   	double kConstantConfusingNumber= 57.29577951;
 
 public:
 
@@ -47,6 +62,7 @@ public:
 	void cameraTeleop();
 	double getDis();
 	double getAng();
+	double getTargetHeight(int);
 };
 
 

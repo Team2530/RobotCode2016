@@ -18,6 +18,7 @@ class Robot: public IterativeRobot{
 private:
 	LiveWindow *lw = LiveWindow::GetInstance();
 	SendableChooser *chooser;
+	SendableChooser *chooser2;
 	const std::string autoNamedN = "Do Nothing";
 	const std::string autoNameLeft = "Left Low Goal";
 	const std::string autoNameRight = "Right Low Goal";
@@ -31,14 +32,18 @@ private:
 
 	Autonomous *autonomous;
 	DriveTrain *Drive;
-
+	const std::string autoNameTest1= "test 1";
+	const std::string autoNameTest2= "test 2";
 
 	void RobotInit(){
-
+		/*if (fork()==0){
+			system("/home/lvuser/start_vision &");
+		}*/
 
 		Drive= new DriveTrain();
 		chooser = new SendableChooser();
-		chooser->AddObject(autoNamedN, (void*)&autoNamedN);
+		chooser2 = new SendableChooser();
+		chooser->AddDefault(autoNamedN, (void*)&autoNamedN);
 		chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
 		chooser->AddObject(autoNameRight, (void*)&autoNameRight);
 		chooser->AddObject(autoNameOver, (void*)&autoNameOver);
@@ -49,7 +54,9 @@ private:
 		chooser->AddObject(autoNameP5, (void*)&autoNameP5);
 		SmartDashboard::PutData("Auto Modes", chooser);
 
-
+		chooser2->AddDefault(autoNameTest1, (void*)&autoNameTest1);
+		chooser2->AddObject(autoNameTest2, (void*)&autoNameTest2);
+		SmartDashboard::PutData("Auto Modes 2", chooser2);
 	}
 
 
@@ -73,6 +80,7 @@ private:
 
 	void AutonomousPeriodic(){
 			//autonomous->driveOverDefense();
+		autonomous->test();
 		SmartDashboard::PutString("selected", autoSelected);
 
 	}

@@ -9,14 +9,15 @@
 
 Camera::Camera() {
 	table = NetworkTable::GetTable("GRIP/myContoursReport");
+	focalLength =kConstantDistance*kConstantPixelHeight/kActualHeight;
 
 }
 int Camera::getTargetIndex(std::vector<double> areas)
 {
 
-	float maxArea = 0;
-	int maxAreaIndex = -1;
-	int i = 0;
+	float maxArea = kMaxArea;
+	int maxAreaIndex = kMaxAreaIndex;
+	int i = kI;
 
 	for( auto area : areas){
 		if(area > maxArea){
@@ -36,6 +37,12 @@ double Camera::getTargetWidth(int contoursIndex){
 	return widths [contoursIndex];
 }
 
+double Camera::getTargetHeight(int contoursIndex){
+	SmartDashboard::PutNumber("Check3", 1);
+	SmartDashboard::PutNumber("Height", heights [contoursIndex]);
+	return heights [contoursIndex];
+}
+
 double Camera::getTargetCenterX(int contoursIndex){
 	SmartDashboard::PutNumber("CenterX", centerXs [contoursIndex]);
 	double centerX = centerXs [contoursIndex];
@@ -46,35 +53,45 @@ double Camera::getTargetDistance(std::vector<double> areas){
 	//gets the target distance of the best area
 		SmartDashboard::PutNumber("Check2", 2);
 		int contoursIndex = getTargetIndex(areas);
-		if (contoursIndex == -1){
-			return -1;
+		if (contoursIndex == kContoursIndexCheck){
+			return kContoursIndexCheck;
 		}
 		double width = getTargetWidth(contoursIndex);
-		if (width <= 0){
-			return -2;
+		double height = getTargetHeight(contoursIndex);
+		if (width <= kHeightWidth || kHeightWidth<=0){
+			return kError;
 		}
-		double TargetDistance = 5392.41526 / width;
+		//double x =(1.96078 * height) - (.9802*sqrt((6.04242*height *height)-(width*width)));
+		//height = height-x;
+		double TargetDistance = kActualHeight*focalLength/height;
 		return TargetDistance;
 
 }
 
 double Camera::getTargetAngle( int contoursIndex){
-		if (contoursIndex == -1){
-				return 999;
+		if (contoursIndex == kContoursIndexCheck){
+				return kAngleError;
 		}
 		double centerX = getTargetCenterX(contoursIndex);
-		double TargetAngle = (atan((centerX-160)/(160 * sqrt(3)))) * 57.29577951; //error from left side
+		double TargetAngle = (atan((centerX-kHalfPixelWidth)/(kHalfPixelWidth * sqrt(kRootConstant)))) * kConstantConfusingNumber; //error from left side
 		return TargetAngle;
 }
 
 void Camera::cameraTeleop(){
 
 		widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
+		heights= table->GetNumberArray("height", llvm::ArrayRef<double>());
 		areas = table->GetNumberArray("area", llvm::ArrayRef<double>());
 		centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
 		int contoursIndex = getTargetIndex(areas);
+		SmartDashboard::PutNumber("contourIndex", contoursIndex);
+		if (getTargetDistance(areas)!=kMaxAreaIndex){
 		SmartDashboard::PutNumber("Distance", getTargetDistance(areas));
+		}
+		if (getTargetAngle(contoursIndex)!=kAngleError){
 		SmartDashboard::PutNumber("TargetAngle", getTargetAngle(contoursIndex));
+		}
+
 }
 
 double Camera::getDis(){

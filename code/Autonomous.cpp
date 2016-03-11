@@ -22,13 +22,13 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 		robotd->DriveSet(0.0,0.0);
 	} //drives over a defense
 	void Autonomous::driveOverDefense(){
-		if (autoMode.compare("Do Nothing")==0){
+		if (autoMode.compare("Do Nothing")==kModesEqual){
 			doNothing();
 		}
-		else if (autoMode.compare("Drive Over Defense")==0){
-			robotd->driveDistance(130,.5);
+		else if (autoMode.compare("Drive Over Defense")==kModesEqual){
+			robotd->driveDistance(130,kAutoSpeed);
 		}
-		else if (autoMode.compare("Left Low Goal")==0){
+		else if (autoMode.compare("Left Low Goal")==kModesEqual){
 			/*low goal code:
 			*drives specified distance at specified speed
 			*lowers shooter to specified angle
@@ -38,27 +38,27 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 			*/
 
 			if (step==1){
-				isDone= robotd->driveDistance(30,.6); //check distance
+				isDone= robotd->driveDistance(30,kAutoSpeed); //check distance
 				nextStep(isDone);
 			}
 			else if (step==2){
-			//	isDone= robotd->lowerShooter(20); //create lowerShooter&raiseShooter methods in shooter.cpp
+				isDone= robotd->setAngle(20); //create lowerShooter&raiseShooter methods in shooter.cpp
 				nextStep(isDone);
 			}
 			else if (step==3){
-				isDone= robotd->driveDistance(240,.6); //check distance
+				isDone= robotd->driveDistance(240,kAutoSpeed); //check distance
 				nextStep(isDone);
 			}
 			else if (step==4){
-				isDone= robotd->turnRight(60); //turnLeft if from right side
+				isDone= robotd->turnRight(kLowGoalAngle); //turnLeft if from right side
 				nextStep(isDone);
 			}
 			else if (step==5){
-				robotd->setServo(130);
-				robotd->driveShoot(1.0);
+				robotd->setServo(kServoShootAngle);
+				robotd->driveShoot(kAutoShootSpeed);
 			}
 		}
-		else if (autoMode.compare("Right Low Goal")==0){
+		else if (autoMode.compare("Right Low Goal")==kModesEqual){
 			/*low goal code:
 			*drives specified distance at specified speed
 			*lowers shooter to specified angle
@@ -68,27 +68,27 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 			*/
 
 			if (step==1){
-				isDone= robotd->driveDistance(30,.6); //check distance
+				isDone= robotd->driveDistance(30,kAutoSpeed); //check distance
 				nextStep(isDone);
 			}
 			else if (step==2){
-			//	isDone= robotd->lowerShooter(20); //create lowerShooter&raiseShooter methods in shooter.cpp
+			isDone= robotd->setAngle(20); //create lowerShooter&raiseShooter methods in shooter.cpp
 				nextStep(isDone);
 			}
 			else if (step==3){
-				isDone= robotd->driveDistance(240,.6); //check distance
+				isDone= robotd->driveDistance(240,kAutoSpeed); //check distance
 				nextStep(isDone);
 			}
 			else if (step==4){
-				isDone= robotd->turnLeft(60); //turnLeft if from right side
+				isDone= robotd->turnLeft(kLowGoalAngle); //turnLeft if from right side
 				nextStep(isDone);
 			}
 			else if (step==5){
-				robotd->setServo(130);
+				robotd->setServo(kServoShootAngle);
 				robotd->driveShoot(1.0);
 			}
 		}
-		else if (autoMode.compare("P1 High")==0){
+		else if (autoMode.compare("P1 High")==kModesEqual){
 			/*high goal code:
 			* drives a little
 			* lowers arm
@@ -101,170 +101,170 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 			xangle= robotd->getTargetA(); //check function and add pointer to variable
 			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
 				if (step==1){
-					isDone= robotd->driveDistance(20,.6); //check distance
+					isDone= robotd->driveDistance(20,kAutoSpeed); //check distance
 					nextStep(isDone);
 			}
 			else if (step==2){
-			//isDone= robotd->lowerShooter(20);
+			isDone= robotd->setAngle(20);
+				nextStep(isDone);
+			}
+			else if (step==3){
+				isDone= robotd->driveDistance(100,kAutoSpeed);
 				nextStep(isDone);
 			}
 			else if (step==4){
-				isDone= robotd->driveDistance(100,.6);
-				nextStep(isDone);
-			}
-			else if (step==5){
 				isDone=robotd->turnRight(xangle); //or turn left based on position
 				nextStep(isDone);
 			}
+			else if (step==5){
+				isDone=robotd->driveDistance((int)(imageDistance-kDistanceAwayFromTarget), kAutoSpeed);
+				nextStep(isDone);
+			}
 			else if (step==6){
-				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+			isDone= robotd->setAngle(45); //check angle
 				nextStep(isDone);
 			}
 			else if (step==7){
-			//isDone= robotd->raiseShooter(45); //check angle
-				nextStep(isDone);
-			}
-			else if (step==8){
-				robotd->setServo(130);
-				robotd->driveShoot(1.0);
+				robotd->setServo(kServoShootAngle);
+				robotd->driveShoot(kAutoShootSpeed);
 			}
 
 		}
 
-		else if (autoMode.compare("P2 High")==0){
+		else if (autoMode.compare("P2 High")==kModesEqual){
 
 			xangle= robotd->getTargetA(); //check function and add pointer to variable
 			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
 			if (step==1){
-					isDone= robotd->driveDistance(20,.6); //check distance
+					isDone= robotd->driveDistance(20,kAutoSpeed); //check distance
 					nextStep(isDone);
 			}
 			else if (step==2){
-			//isDone= robotd->lowerShooter(20);
+			isDone= robotd->setAngle(20);
+				nextStep(isDone);
+			}
+			else if (step==3){
+				isDone= robotd->driveDistance(100,kAutoSpeed);
 				nextStep(isDone);
 			}
 			else if (step==4){
-				isDone= robotd->driveDistance(100,.6);
-				nextStep(isDone);
-			}
-			else if (step==5){
 				isDone=robotd->turnRight(xangle); //or turn left based on position
 				nextStep(isDone);
 			}
+			else if (step==5){
+				isDone=robotd->driveDistance((int)(imageDistance-kDistanceAwayFromTarget), kAutoSpeed);
+				nextStep(isDone);
+			}
 			else if (step==6){
-				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+			isDone= robotd->setAngle(45); //check angle
 				nextStep(isDone);
 			}
 			else if (step==7){
-			//isDone= robotd->raiseShooter(45); //check angle
-				nextStep(isDone);
-			}
-			else if (step==8){
-				robotd->setServo(130);
-				robotd->driveShoot(1.0);
+				robotd->setServo(kServoShootAngle);
+				robotd->driveShoot(kAutoShootSpeed);
 			}
 
 		}
 
-		else if (autoMode.compare("P3 High")==0){
+		else if (autoMode.compare("P3 High")==kModesEqual){
 
 			xangle= robotd->getTargetA(); //check function and add pointer to variable
 			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
 			if (step==1){
-					isDone= robotd->driveDistance(20,.6); //check distance
+					isDone= robotd->driveDistance(20,kAutoSpeed); //check distance
 					nextStep(isDone);
 			}
 			else if (step==2){
 			//isDone= robotd->lowerShooter(20);
 				nextStep(isDone);
 			}
-			else if (step==4){
-				isDone= robotd->driveDistance(100,.6);
+			else if (step==3){
+				isDone= robotd->driveDistance(100,kAutoSpeed);
 				nextStep(isDone);
 			}
-			else if (step==5){
+			else if (step==4){
 				isDone=robotd->turnRight(xangle); //or turn left based on position
 				nextStep(isDone);
 			}
-			else if (step==6){
-				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+			else if (step==5){
+				isDone=robotd->driveDistance((int)(imageDistance-kDistanceAwayFromTarget), kAutoSpeed);
 				nextStep(isDone);
 			}
-			else if (step==7){
+			else if (step==6){
 			//isDone= robotd->raiseShooter(45); //check angle
 				nextStep(isDone);
 			}
-			else if (step==8){
-				robotd->setServo(130);
-				robotd->driveShoot(1.0);
+			else if (step==7){
+				robotd->setServo(kServoShootAngle);
+				robotd->driveShoot(kAutoShootSpeed);
 			}
 
 		}
-		else if (autoMode.compare("P4 High")==0){
+		else if (autoMode.compare("P4 High")==kModesEqual){
 
 			xangle= robotd->getTargetA(); //check function and add pointer to variable
 			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
 			if (step==1){
-					isDone= robotd->driveDistance(20,.6); //check distance
+					isDone= robotd->driveDistance(20, kAutoSpeed); //check distance
 					nextStep(isDone);
 			}
 			else if (step==2){
-			//isDone= robotd->lowerShooter(20);
+			isDone= robotd->setAngle(20);
+				nextStep(isDone);
+			}
+			else if (step==3){
+				isDone= robotd->driveDistance(100,kAutoSpeed);
 				nextStep(isDone);
 			}
 			else if (step==4){
-				isDone= robotd->driveDistance(100,.6);
-				nextStep(isDone);
-			}
-			else if (step==5){
 				isDone=robotd->turnLeft(xangle); //or turn left based on position
 				nextStep(isDone);
 			}
+			else if (step==5){
+				isDone=robotd->driveDistance((int)(imageDistance-kDistanceAwayFromTarget), kAutoSpeed);
+				nextStep(isDone);
+			}
 			else if (step==6){
-				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+			isDone= robotd->setAngle(45); //check angle
 				nextStep(isDone);
 			}
 			else if (step==7){
-			//isDone= robotd->raiseShooter(45); //check angle
-				nextStep(isDone);
-			}
-			else if (step==8){
-				robotd->setServo(130);
-				robotd->driveShoot(1.0);
+				robotd->setServo(kServoShootAngle);
+				robotd->driveShoot(kAutoShootSpeed);
 			}
 
 		}
-		else if (autoMode.compare("P5 High")==0){
+		else if (autoMode.compare("P5 High")==kModesEqual){
 
 			xangle= robotd->getTargetA(); //check function and add pointer to variable
 			imageDistance= robotd->getTargetD(); //check function and add pointer to variable
 			if (step==1){
-					isDone= robotd->driveDistance(20,.6); //check distance
+					isDone= robotd->driveDistance(20,kAutoSpeed); //check distance
 					nextStep(isDone);
 			}
 			else if (step==2){
-			//isDone= robotd->lowerShooter(20);
+			isDone= robotd->setAngle(20);
+				nextStep(isDone);
+			}
+			else if (step==3){
+				isDone= robotd->driveDistance(100,kAutoSpeed);
 				nextStep(isDone);
 			}
 			else if (step==4){
-				isDone= robotd->driveDistance(100,.6);
-				nextStep(isDone);
-			}
-			else if (step==5){
 				isDone=robotd->turnLeft(xangle); //or turn left based on position
 				nextStep(isDone);
 			}
+			else if (step==5){
+				isDone=robotd->driveDistance((int)(imageDistance-kDistanceAwayFromTarget), kAutoSpeed);
+				nextStep(isDone);
+			}
 			else if (step==6){
-				isDone=robotd->driveDistance((int)(imageDistance-60), .6);
+			isDone= robotd->setAngle(45); //check angle
 				nextStep(isDone);
 			}
 			else if (step==7){
-			//isDone= robotd->raiseShooter(45); //check angle
-				nextStep(isDone);
-			}
-			else if (step==8){
-				robotd->setServo(130);
-				robotd->driveShoot(1.0);
+				robotd->setServo(kServoShootAngle);
+				robotd->driveShoot(kAutoShootSpeed);
 			}
 
 		}
@@ -286,4 +286,18 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 			done=false;
 		}
 		return done;
+	}
+	void Autonomous::test(){
+		if (step==1){
+			isDone=robotd->turnLeft(xangle); //or turn left based on position
+			nextStep(isDone);
+		}
+		else if (step==2){
+			isDone=robotd->setAngle(45);
+			nextStep(isDone);
+		}
+		else if (step==3){
+			robotd->driveShoot(kAutoShootSpeed);
+			robotd->setServo(kServoShootAngle);
+		}
 	}

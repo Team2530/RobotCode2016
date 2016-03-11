@@ -5,7 +5,7 @@
  *      Authors: Eric and Jack
  */
 #include "WPILib.h"
-
+#include "ControllerConstants.h"
 #include "DriveTrain.h"
 #ifndef AUTONOMOUS_H_
 #define AUTONOMOUS_H_
@@ -19,6 +19,12 @@ class Autonomous {
 	std::string autoMode;
 	double xangle;
 	double imageDistance;
+	double kAutoSpeed=.6;
+	double kLowGoalAngle= 60;
+	double kServoShootAngle=130;
+	double kAutoShootSpeed=1.0;
+	double kModesEqual=0;
+	int kDistanceAwayFromTarget=60;
 
 public:
 	Autonomous(DriveTrain*, std::string);
@@ -29,6 +35,7 @@ public:
 	bool attackTower(std::string);
 	double getTime();
 	bool nextStep(bool);
+	void test();
 };
 
 

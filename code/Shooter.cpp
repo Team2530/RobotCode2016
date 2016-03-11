@@ -11,19 +11,19 @@
 //instantiates shooter motors, lifer motors, limit switches, and
 Shooter::Shooter() {
 	//check ports
-	leftShooter= new TalonSRX(6);
-	rightShooter= new TalonSRX(7);
+	leftShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM4);
+	rightShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM5);
 
-	leftLifter= new TalonSRX(4);
-	rightLifter= new TalonSRX(5);
-	shooterEncoder= new Encoder(4,5); //check ports
-	shooterEncoder->SetDistancePerPulse(1);// take ticks from 90-0, div 90
+	leftLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM6);
+	rightLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM7);
+	shooterEncoder= new Encoder(ControllerConstants::DIOPort::kDIO3, ControllerConstants::DIOPort::kDIO4); //check ports
+	shooterEncoder->SetDistancePerPulse(kDefaultEncoderPulseVal);// take ticks from 90-0, div 90
 
 	//check ports
-	low1= new DigitalInput(8);
-	low2= new DigitalInput(9);
-	high1= new DigitalInput(6);
-	high2= new DigitalInput(7);
+	low1= new DigitalInput(ControllerConstants::PWMPort::kPWM8);
+	low2= new DigitalInput(ControllerConstants::PWMPort::kPWM9);
+	high1= new DigitalInput(ControllerConstants::PWMPort::kPWM6);
+	high2= new DigitalInput(ControllerConstants::PWMPort::kPWM7);
 
 }
 
@@ -31,30 +31,35 @@ Shooter::Shooter() {
 void Shooter::shoot(float speed){
 	leftShooter->Set(speed);
 	rightShooter->Set(-speed);
+	SmartDashboard::PutNumber("shootspeed",speed);
 }
 
 //takes in  ball at 40% speed
 void Shooter::takeInBall(){
-	leftShooter->Set(-.4f);
-	rightShooter->Set(.4f);
+	leftShooter->Set(-kTakeInSpeed);
+	rightShooter->Set(kTakeInSpeed);
 }
 
 //stops shooter motors
 void Shooter::stopMotors(){
-	leftShooter->Set(0);
-	rightShooter->Set(0);
+	leftShooter->Set(kStopMotors);
+	rightShooter->Set(kStopMotors);
 }
 
 //if limit switches are pressed, don't lift or lower towards those switches
 //otherwise, lift/lower as needed
 void Shooter::angleBall(float lifterSpeed){
-	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed>0){
-		leftLifter->Set(0);
-		rightLifter->Set(0);
+	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed>kStopMotors){
+		leftLifter->Set(kStopMotors);
+		rightLifter->Set(kStopMotors);
 	}
-	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed<0){
-		leftLifter->Set(0);
-		rightLifter->Set(0);
+	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed< kStopMotors){
+		leftLifter->Set(kStopMotors);
+		rightLifter->Set(kStopMotors);
+	}
+	else if ((lifterSpeed<kLifterSpeedMin && lifterSpeed>-kLifterSpeedMin) || (lifterSpeed>kLifterSpeedCap) || (lifterSpeed<-kLifterSpeedCap)){
+		leftLifter->Set(kStopMotors);
+		rightLifter->Set(kStopMotors);
 	}
 	else{
 	leftLifter->Set(lifterSpeed);
@@ -62,16 +67,26 @@ void Shooter::angleBall(float lifterSpeed){
 	SmartDashboard::PutNumber("angle", shooterEncoder->GetDistance());
 	}
 	SmartDashboard::PutNumber("lifterpower", lifterSpeed);
+	SmartDashboard::PutNumber("encoder angle", shooterEncoder->Get()*kEncoderAngleVal);
 }
 
 
-void Shooter::setAngle(float angle){
-	if (shooterEncoder->GetDistance()<angle){
-		angleBall(.6); //check power
+bool Shooter::setAngle(double angle){
+	if ((kAngleErrorMargin<= angle- shooterEncoder->Get()*kEncoderAngleVal) && (kAngleErrorMargin>= angle- shooterEncoder->Get()*kEncoderAngleVal)){
+		angleBall(kStopMotors);
+		return true;
+	}
+	else if (shooterEncoder->Get()*kEncoderAngleVal<angle){
+		angleBall(kAngleBallSpeed);
+	}
+	else if (shooterEncoder->Get()*kEncoderAngleVal>angle){
+		angleBall(-kAngleBallSpeed);
 	}
 	else{
-		angleBall(0);
+		angleBall(kStopMotors);
+		return true;
 	}
+	return false;
 }
 bool Shooter::lowStop(bool l1, bool l2){
 	if (l1||l2){

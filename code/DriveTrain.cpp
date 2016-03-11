@@ -21,18 +21,18 @@ DriveTrain::DriveTrain() {
 		vic4= new VictorSP(0);
 		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
 
-		leftEncoder = new Encoder (2,3, true, CounterBase:: k4X); //check ports
+		leftEncoder = new Encoder (5,6, true, CounterBase:: k4X); //check ports
 		rightEncoder = new Encoder (0,1, true, CounterBase:: k4X);
-		leftEncoder->SetDistancePerPulse((-1*3.14159*8)/432); //check circumference/(pulses per revolution)
-		rightEncoder->SetDistancePerPulse((3.14159*8)/630);
+		leftEncoder->SetDistancePerPulse(kLeftDistancePerPulse); //check circumference/(pulses per revolution)
+		rightEncoder->SetDistancePerPulse(kRightDistancePerPulse);
 
-		leftStick = new Joystick(0);
-		rightStick= new Joystick(1);
-		xBox= new Joystick(2);
-		servo= new Servo(8);
+		leftStick = new Joystick(ControllerConstants::USBJoystickPort::kUSB0);
+		rightStick= new Joystick(ControllerConstants::USBJoystickPort::kUSB1);
+		xBox= new Joystick(ControllerConstants::USBJoystickPort::kUSB2);
+		servo= new Servo(ControllerConstants::PWMPort::kPWM8);
 		ahrs= new AHRS(SerialPort::kMXP);
 		step=1;
-		spike= new Relay(0,Relay::Direction::kForwardOnly);
+		spike= new Relay(ControllerConstants::RelayPort::kRP0,Relay::Direction::kForwardOnly);
 		shooter= new Shooter();
 		done=false;
 
@@ -75,38 +75,38 @@ DriveTrain::DriveTrain() {
 	void DriveTrain::Drive(){
 
 
-		float throttle = getThrottle(.4); //minimum value for throttle in (min, 1)
+		float throttle = getThrottle(kThrottleMinimum); //minimum value for throttle in (min, 1)
 		//if x is pressed let operator pivot
 		if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kXbutton)){
-			myRobot->Drive(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSXAxis),1);
+			myRobot->Drive(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSXAxis),kTurnRightFullDegrees);
 		}//otherwise drive with each stick controlling the robot
 		else{
 			myRobot->TankDrive(rightStick->GetY()*throttle, leftStick->GetY()*throttle, true);
 		}
 
 			//button RT controls power of shooter
-		if (xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kRTAxis)>.1){
+		if (xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kRTAxis)>kTriggerThreshold){
 			shooter->shoot(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kRTAxis));
 		}
 		//if right bumper is pressed, shoot boulder at 100% power
 		else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kRBbutton)){
-			shooter->shoot(1);
+			shooter->shoot(kshoot100);
 		}
 		//button LB takes in the ball and resets Servo
 		else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kLBbutton)){
 			shooter->takeInBall();
-			servo->Set(0);
+			servo->Set(kServoRest);
 		}
 
 		//button Y stops motors and resets Servo
 		else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kYbutton)){
 			shooter->stopMotors();
-			servo->Set(0);
+			servo->Set(kServoRest);
 		}
 
 		//button RB flicks servo to send ball through motors
 		else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kAbutton)){
-			servo->Set(130);
+			servo->Set(kServoShoot);
 		}
 		camera->cameraTeleop();
 		//lift boulder at left analog stick speed
@@ -127,24 +127,24 @@ DriveTrain::DriveTrain() {
 	bool DriveTrain::driveDistance(int distanceInches, float speed){
 		//get start angle
 		if (step==1){
-			angleStart= ahrs->GetAngle()-180;
-			myRobot->Drive(0.0,0.0);
+			angleStart= ahrs->GetAngle()-kOppositeAngle;
+			myRobot->Drive(kNoPower,kNoAngle);
 			step++;
 		}
 		//find difference in this angle from angle last loop and drive opposite of that; keep driving until distance is reached
 		if (step==2){
-			double changeInAngle= ((ahrs->GetAngle()-180)-angleStart);
+			double changeInAngle= ((ahrs->GetAngle()-kOppositeAngle)-angleStart);
 			if (leftEncoder->GetDistance()< distanceInches && leftEncoder->GetDistance()> -distanceInches && rightEncoder->GetDistance()< distanceInches && rightEncoder->GetDistance()>-distanceInches){
-				myRobot->Drive(-speed, changeInAngle/80);
+				myRobot->Drive(-speed, changeInAngle/kChangeInAngleConstant);
 			}
 			else{
-				myRobot->ArcadeDrive(0.0,0.0,true);
+				myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 				done =true;
 
 			}
 			SmartDashboard::PutNumber("left distance Auto", leftEncoder->GetDistance());
 			SmartDashboard::PutNumber("right distance Auto", rightEncoder->GetDistance());
-			SmartDashboard::PutNumber("changeInAngle", changeInAngle/80);
+			SmartDashboard::PutNumber("changeInAngle", changeInAngle/kChangeInAngleConstant);
 		}
 		return done;
 
@@ -162,39 +162,39 @@ DriveTrain::DriveTrain() {
 		if (step==1){
 			startAngle= ahrs->GetAngle();
 			stopAngle= startAngle+angle;
-			if (stopAngle>360){
-				stopAngle-=360;
+			if (stopAngle>kFullCircle){
+				stopAngle-=kFullCircle;
 			}
 			step++;
 		}
 		if (step==2){
 			angleTheta= stopAngle-ahrs->GetAngle();
-			if (angleTheta<=0){
-				angleTheta= (stopAngle+360);
+			if (angleTheta<=kNoAngle){
+				angleTheta= (stopAngle+kFullCircle);
 			}
-			speed =angleTheta/(1.2*angle);
-			if (speed>.3){
-				speed=.3;
+			speed =angleTheta/(kAngleThetaConstant*angle);
+			if (speed>kTurnSpeedCap){
+				speed=kTurnSpeedCap;
 			}
-			if (speed<.1){
-				speed=.1;
+			if (speed<kTurnSpeedMin){
+				speed=kTurnSpeedMin;
 			}
 			if (startAngle<stopAngle){
 				if (ahrs->GetAngle()<stopAngle){
-					myRobot->Drive(speed,1);
+					myRobot->Drive(speed,kTurnRightFullDegrees);
 				}
 				else{
-					myRobot->ArcadeDrive(0.0,0,true);
+					myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 					done= true;
 
 				}
 			}
 			else{
 				if (ahrs->GetAngle()>startAngle||ahrs->GetAngle()<stopAngle){
-					myRobot->Drive(speed,1);
+					myRobot->Drive(speed,kTurnRightFullDegrees);
 				}
 				else{
-					myRobot->ArcadeDrive(0,0,true);
+					myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 					done=true;
 
 				}
@@ -214,38 +214,38 @@ DriveTrain::DriveTrain() {
 		if (step==1){
 					startAngle= ahrs->GetAngle();
 					stopAngle= startAngle-angle;
-					if (stopAngle<0){
-						stopAngle+=360;
+					if (stopAngle<kNoAngle){
+						stopAngle+=kFullCircle;
 					}
 					step++;
 				}
 		if(step==2){
 		angleTheta= ahrs->GetAngle()-stopAngle;
-				if (angleTheta<=0){
-					angleTheta= (stopAngle+360);
+				if (angleTheta<=kNoAngle){
+					angleTheta= (stopAngle+kFullCircle);
 				}
-				speed= angleTheta/(1.2*angle);
-				if (speed>.3){
-					speed=.3;
+				speed= angleTheta/(kAngleThetaConstant*angle);
+				if (speed>kTurnSpeedCap){
+					speed=kTurnSpeedCap;
 				}
-				if (speed<.1){
-					speed=.1;
+				if (speed<kTurnSpeedMin){
+					speed=kTurnSpeedMin;
 				}
 				if (stopAngle<startAngle){
 					if (stopAngle<ahrs->GetAngle()){
-						myRobot->Drive(speed,-1);
+						myRobot->Drive(speed,-kTurnRightFullDegrees);
 					}
 					else{
-						myRobot->ArcadeDrive(0,0,true);
+						myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 						done = true;
 					}
 				}
 				else{
 					if (ahrs->GetAngle()<startAngle||ahrs->GetAngle()>stopAngle){
-						myRobot->Drive(speed,-1);
+						myRobot->Drive(speed,-kTurnRightFullDegrees);
 					}
 					else{
-						myRobot->ArcadeDrive(0,0,true);
+						myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 						done=true;
 					}
 				}
@@ -267,4 +267,10 @@ DriveTrain::DriveTrain() {
 
 	double DriveTrain::getTargetA(){
 		return camera->getAng();
+	}
+
+	bool DriveTrain::setAngle(double theta){
+		bool isDoneNow=false;
+		isDoneNow= shooter->setAngle(theta);
+		return isDoneNow;
 	}
