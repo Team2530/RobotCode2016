@@ -22,7 +22,7 @@ class Autonomous {
 	double kAutoSpeed=.6;
 	double kLowGoalAngle= 60;
 	double kServoShootAngle=130;
-	double kAutoShootSpeed=1.0;
+	double kAutoShootSpeed=.8;
 	double kModesEqual=0;
 	int kDistanceAwayFromTarget=60;
 

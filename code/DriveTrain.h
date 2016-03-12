@@ -13,10 +13,10 @@
 
 class DriveTrain {
 
-	VictorSP *vic1;
-	VictorSP *vic2;
-	VictorSP *vic3;
-	VictorSP *vic4;
+	Victor *vic1;
+	Victor *vic2;
+	Victor *vic3;
+	Victor *vic4;
 	Relay *spike;
 	Servo *servo;
 
@@ -47,9 +47,9 @@ class DriveTrain {
 	double kLeftDistancePerPulse= -1*3.14159*8/432;
 	double kRightDistancePerPulse= 3.14159*8/630;
 	double kThrottleMinimum = .4;
-	double kServoRest=0;
-	double kServoShoot=130;
-	double kshoot100=1.0;
+	double kServoRest=130;
+	double kServoShoot=0;
+	double kshoot100=.8;
 	double kOppositeAngle =180;
 	double kChangeInAngleConstant= 80;
 	double kFullCircle= 360;

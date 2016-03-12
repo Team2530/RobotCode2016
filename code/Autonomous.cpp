@@ -288,7 +288,7 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 		return done;
 	}
 	void Autonomous::test(){
-		if (step==1){
+		/*if (step==1){
 			isDone=robotd->turnLeft(xangle); //or turn left based on position
 			nextStep(isDone);
 		}
@@ -299,5 +299,6 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 		else if (step==3){
 			robotd->driveShoot(kAutoShootSpeed);
 			robotd->setServo(kServoShootAngle);
-		}
+		}*/
+		robotd->setAngle(227);
 	}

@@ -58,7 +58,7 @@ double Camera::getTargetDistance(std::vector<double> areas){
 		}
 		double width = getTargetWidth(contoursIndex);
 		double height = getTargetHeight(contoursIndex);
-		if (width <= kHeightWidth || kHeightWidth<=0){
+		if (width <= kHeightWidth || height<=0){
 			return kError;
 		}
 		//double x =(1.96078 * height) - (.9802*sqrt((6.04242*height *height)-(width*width)));

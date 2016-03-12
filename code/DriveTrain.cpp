@@ -13,16 +13,16 @@
 DriveTrain::DriveTrain() {
 
 	//=new Victor(port) for kitbot, SP for actual bot
-		vic1 = new VictorSP(3);
-		vic2= new VictorSP(2);
+		vic1 = new Victor(ControllerConstants::PWMPort::kPWM0);
+		vic2= new Victor(ControllerConstants::PWMPort::kPWM1);
 		camera = new Camera();
 
-		vic3= new VictorSP(1);
-		vic4= new VictorSP(0);
+		vic3= new Victor(ControllerConstants::PWMPort::kPWM2);
+		vic4= new Victor(ControllerConstants::PWMPort::kPWM3);
 		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
 
-		leftEncoder = new Encoder (5,6, true, CounterBase:: k4X); //check ports
-		rightEncoder = new Encoder (0,1, true, CounterBase:: k4X);
+		rightEncoder = new Encoder (ControllerConstants::DIOPort::kDIO2, ControllerConstants::DIOPort::kDIO3, true, CounterBase:: k4X); //check ports
+		leftEncoder = new Encoder (ControllerConstants::DIOPort::kDIO0, ControllerConstants::DIOPort::kDIO1, true, CounterBase:: k4X);
 		leftEncoder->SetDistancePerPulse(kLeftDistancePerPulse); //check circumference/(pulses per revolution)
 		rightEncoder->SetDistancePerPulse(kRightDistancePerPulse);
 
@@ -81,7 +81,7 @@ DriveTrain::DriveTrain() {
 			myRobot->Drive(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSXAxis),kTurnRightFullDegrees);
 		}//otherwise drive with each stick controlling the robot
 		else{
-			myRobot->TankDrive(rightStick->GetY()*throttle, leftStick->GetY()*throttle, true);
+			myRobot->TankDrive(leftStick->GetY()*throttle*-1, rightStick->GetY()*throttle*-1, true);
 		}
 
 			//button RT controls power of shooter

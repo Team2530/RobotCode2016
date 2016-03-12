@@ -27,7 +27,7 @@ class Shooter {
 	double kLifterSpeedCap = .2;
 	double kLifterSpeedMin =.075;
 	double kAngleErrorMargin= 2.0;
-	double kEncoderAngleVal= .3515625;
+	double kEncoderAngleVal= 1;
 	double kAngleBallSpeed= .1;
 
 public:

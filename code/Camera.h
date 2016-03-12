@@ -38,7 +38,7 @@ class Camera {
 	double focalLength;
 
 	double kConstantDistance=162;
-	double kActualHeight =14;
+	double kActualHeight =12;
 	double kConstantPixelHeight=37;
 	float kMaxArea=0;
     int kMaxAreaIndex =-1;

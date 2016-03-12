@@ -11,33 +11,33 @@
 //instantiates shooter motors, lifer motors, limit switches, and
 Shooter::Shooter() {
 	//check ports
-	leftShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM4);
-	rightShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM5);
+	leftShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM6);
+	rightShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM7);
 
-	leftLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM6);
-	rightLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM7);
-	shooterEncoder= new Encoder(ControllerConstants::DIOPort::kDIO3, ControllerConstants::DIOPort::kDIO4); //check ports
+	leftLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM4);
+	rightLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM5);
+	shooterEncoder= new Encoder(ControllerConstants::DIOPort::kDIO4, ControllerConstants::DIOPort::kDIO5); //check ports
 	shooterEncoder->SetDistancePerPulse(kDefaultEncoderPulseVal);// take ticks from 90-0, div 90
 
 	//check ports
-	low1= new DigitalInput(ControllerConstants::PWMPort::kPWM8);
-	low2= new DigitalInput(ControllerConstants::PWMPort::kPWM9);
-	high1= new DigitalInput(ControllerConstants::PWMPort::kPWM6);
-	high2= new DigitalInput(ControllerConstants::PWMPort::kPWM7);
+	low1= new DigitalInput(ControllerConstants::DIOPort::kDIO8);
+	low2= new DigitalInput(ControllerConstants::DIOPort::kDIO9);
+	high1= new DigitalInput(ControllerConstants::DIOPort::kDIO6);
+	high2= new DigitalInput(ControllerConstants::DIOPort::kDIO7);
 
 }
 
 //shoots boulder at specified speed
 void Shooter::shoot(float speed){
-	leftShooter->Set(speed);
-	rightShooter->Set(-speed);
+	leftShooter->Set(-speed);
+	rightShooter->Set(speed);
 	SmartDashboard::PutNumber("shootspeed",speed);
 }
 
 //takes in  ball at 40% speed
 void Shooter::takeInBall(){
-	leftShooter->Set(-kTakeInSpeed);
-	rightShooter->Set(kTakeInSpeed);
+	leftShooter->Set(kTakeInSpeed);
+	rightShooter->Set(-kTakeInSpeed);
 }
 
 //stops shooter motors
@@ -57,9 +57,13 @@ void Shooter::angleBall(float lifterSpeed){
 		leftLifter->Set(kStopMotors);
 		rightLifter->Set(kStopMotors);
 	}
-	else if ((lifterSpeed<kLifterSpeedMin && lifterSpeed>-kLifterSpeedMin) || (lifterSpeed>kLifterSpeedCap) || (lifterSpeed<-kLifterSpeedCap)){
+	else if ((lifterSpeed<kLifterSpeedMin && lifterSpeed>-kLifterSpeedMin)){
 		leftLifter->Set(kStopMotors);
 		rightLifter->Set(kStopMotors);
+	}
+	else if((lifterSpeed>kLifterSpeedCap) || (lifterSpeed<-kLifterSpeedCap)){
+		leftLifter->Set(kLifterSpeedCap);
+		rightLifter->Set(kLifterSpeedCap);
 	}
 	else{
 	leftLifter->Set(lifterSpeed);
