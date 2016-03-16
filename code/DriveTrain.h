@@ -33,7 +33,7 @@ class DriveTrain {
 	Camera *camera;
 
 	AHRS *ahrs;
-	int step;
+	int step=1;
 
 	double angleStart;
 	double currentAngle;
@@ -44,18 +44,18 @@ class DriveTrain {
 	double constant;
 	bool done;
 
-	double kLeftDistancePerPulse= -1*3.14159*8/432;
-	double kRightDistancePerPulse= 3.14159*8/630;
+	double kLeftDistancePerPulse= 1;// -1*3.14159*8/432;
+	double kRightDistancePerPulse= 1;//3.14159*8/630;
 	double kThrottleMinimum = .4;
 	double kServoRest=130;
 	double kServoShoot=0;
-	double kshoot100=.8;
+	double kshoot100=1;
 	double kOppositeAngle =180;
 	double kChangeInAngleConstant= 80;
 	double kFullCircle= 360;
 	double kAngleThetaConstant= 1.2;
-	double kTurnSpeedCap=.3;
-	double kTurnSpeedMin=.1;
+	double kTurnSpeedCap=.4;
+	double kTurnSpeedMin=.2;
 	double kTriggerThreshold=.1;
 	double kTurnRightFullDegrees= 1.0;
 	double kNoAngle=0.0;

@@ -20,15 +20,17 @@ class Shooter {
 	DigitalInput *low2;
 	DigitalInput *high1;
 	DigitalInput *high2;
+	double angleDiff;
 
 	double kDefaultEncoderPulseVal=1;
 	double kTakeInSpeed=.4f;
-	double kStopMotors= 0;
+	double kStopMotors= -0.04;
+	double kStopShooters= 0;
 	double kLifterSpeedCap = .2;
 	double kLifterSpeedMin =.075;
-	double kAngleErrorMargin= 2.0;
+	double kAngleErrorMargin= 3.0;
 	double kEncoderAngleVal= 1;
-	double kAngleBallSpeed= .1;
+	double kAngleBallSpeed= .09;
 
 public:
 	Shooter();

@@ -160,6 +160,7 @@ DriveTrain::DriveTrain() {
 	bool DriveTrain::turnRight(double angle){
 
 		if (step==1){
+			ahrs->Reset();
 			startAngle= ahrs->GetAngle();
 			stopAngle= startAngle+angle;
 			if (stopAngle>kFullCircle){
@@ -171,32 +172,40 @@ DriveTrain::DriveTrain() {
 			angleTheta= stopAngle-ahrs->GetAngle();
 			if (angleTheta<=kNoAngle){
 				angleTheta= (stopAngle+kFullCircle);
+				std::printf("angle set to stop+Full circle\n");
 			}
 			speed =angleTheta/(kAngleThetaConstant*angle);
 			if (speed>kTurnSpeedCap){
 				speed=kTurnSpeedCap;
+				std::printf("speed set to Turn speed cap\n");
 			}
 			if (speed<kTurnSpeedMin){
 				speed=kTurnSpeedMin;
+				std::printf("speed set to speed min\n");
 			}
 			if (startAngle<stopAngle){
 				if (ahrs->GetAngle()<stopAngle){
-					myRobot->Drive(speed,kTurnRightFullDegrees);
+					myRobot->Drive(speed,1.0);
+					std::printf("DRIVE A VECTOR\n");
 				}
 				else{
 					myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+					std::printf("DRIVE IN ARCADE! LIKE CAVE JOHNSON/n");
+					step--;
 					done= true;
-
+					std::printf("done");
 				}
 			}
 			else{
-				if (ahrs->GetAngle()>startAngle||ahrs->GetAngle()<stopAngle){
-					myRobot->Drive(speed,kTurnRightFullDegrees);
+				if (ahrs->GetAngle()>=startAngle||ahrs->GetAngle()<stopAngle){
+					myRobot->Drive(speed,1.0);
+					std::printf("consider the other case\n");
 				}
 				else{
 					myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 					done=true;
-
+					step--;
+					std::printf("done with other case\n");
 				}
 			}
 
@@ -233,7 +242,7 @@ DriveTrain::DriveTrain() {
 				}
 				if (stopAngle<startAngle){
 					if (stopAngle<ahrs->GetAngle()){
-						myRobot->Drive(speed,-kTurnRightFullDegrees);
+						myRobot->Drive(speed,-kTurnRightFullDegrees); //TankDrive(-,+)
 					}
 					else{
 						myRobot->ArcadeDrive(kNoPower,kNoAngle,true);

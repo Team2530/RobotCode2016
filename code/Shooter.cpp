@@ -18,7 +18,7 @@ Shooter::Shooter() {
 	rightLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM5);
 	shooterEncoder= new Encoder(ControllerConstants::DIOPort::kDIO4, ControllerConstants::DIOPort::kDIO5); //check ports
 	shooterEncoder->SetDistancePerPulse(kDefaultEncoderPulseVal);// take ticks from 90-0, div 90
-
+	shooterEncoder->Reset();
 	//check ports
 	low1= new DigitalInput(ControllerConstants::DIOPort::kDIO8);
 	low2= new DigitalInput(ControllerConstants::DIOPort::kDIO9);
@@ -42,8 +42,8 @@ void Shooter::takeInBall(){
 
 //stops shooter motors
 void Shooter::stopMotors(){
-	leftShooter->Set(kStopMotors);
-	rightShooter->Set(kStopMotors);
+	leftShooter->Set(kStopShooters);
+	rightShooter->Set(kStopShooters);
 }
 
 //if limit switches are pressed, don't lift or lower towards those switches
@@ -76,15 +76,19 @@ void Shooter::angleBall(float lifterSpeed){
 
 
 bool Shooter::setAngle(double angle){
-	if ((kAngleErrorMargin<= angle- shooterEncoder->Get()*kEncoderAngleVal) && (kAngleErrorMargin>= angle- shooterEncoder->Get()*kEncoderAngleVal)){
+	 double angleDiff=angle- shooterEncoder->Get()*kEncoderAngleVal;
+	 if (angleDiff<0){
+		 angleDiff*=-1;
+	 }
+	if ((kAngleErrorMargin>= angleDiff)){
 		angleBall(kStopMotors);
 		return true;
 	}
-	else if (shooterEncoder->Get()*kEncoderAngleVal<angle){
-		angleBall(kAngleBallSpeed);
-	}
 	else if (shooterEncoder->Get()*kEncoderAngleVal>angle){
 		angleBall(-kAngleBallSpeed);
+	}
+	else if (shooterEncoder->Get()*kEncoderAngleVal<angle){
+		angleBall(kAngleBallSpeed);
 	}
 	else{
 		angleBall(kStopMotors);
