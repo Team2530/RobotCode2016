@@ -24,7 +24,7 @@ class Shooter {
 
 	double kDefaultEncoderPulseVal=1;
 	double kTakeInSpeed=.4f;
-	double kStopMotors= -0.04;
+	double kStopMotors= -0.04; //-.04
 	double kStopShooters= 0;
 	double kLifterSpeedCap = .2;
 	double kLifterSpeedMin =.075;
