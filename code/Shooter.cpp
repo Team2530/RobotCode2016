@@ -50,12 +50,13 @@ void Shooter::stopMotors(){
 //otherwise, lift/lower as needed
 void Shooter::angleBall(float lifterSpeed){
 	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed>kStopMotors){
-		leftLifter->Set(kStopMotors);
-		rightLifter->Set(kStopMotors);
+		leftLifter->Set(0);
+		rightLifter->Set(0);
 	}
 	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed< kStopMotors){
-		leftLifter->Set(kStopMotors);
-		rightLifter->Set(kStopMotors);
+		leftLifter->Set(0);
+		rightLifter->Set(0);
+		shooterEncoder->Reset();
 	}
 	else if ((lifterSpeed<kLifterSpeedMin && lifterSpeed>-kLifterSpeedMin)){
 		leftLifter->Set(kStopMotors);

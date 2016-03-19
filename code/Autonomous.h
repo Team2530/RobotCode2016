@@ -36,6 +36,7 @@ public:
 	double getTime();
 	bool nextStep(bool);
 	void test();
+	void reset();
 };
 
 

@@ -57,6 +57,7 @@ private:
 		chooser2->AddDefault(autoNameTest1, (void*)&autoNameTest1);
 		chooser2->AddObject(autoNameTest2, (void*)&autoNameTest2);
 		SmartDashboard::PutData("Auto Modes 2", chooser2);
+		autonomous = new Autonomous(Drive, *((std::string*)chooser->GetSelected()));
 	}
 
 
@@ -71,10 +72,11 @@ private:
 	 */
 	void AutonomousInit(){
 		autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
-		autonomous = new Autonomous(Drive, *((std::string*)chooser->GetSelected()));
+
 
 		Drive->AutonomousInit();
 		autonomous->startTimer();
+		autonomous->reset();
 
 	}
 

@@ -43,6 +43,7 @@ class DriveTrain {
 	double angleTheta;
 	double constant;
 	bool done;
+	bool leftTurn=true;
 
 	double kLeftDistancePerPulse= 1;// -1*3.14159*8/432;
 	double kRightDistancePerPulse= 1;//3.14159*8/630;
@@ -54,8 +55,8 @@ class DriveTrain {
 	double kChangeInAngleConstant= 80;
 	double kFullCircle= 360;
 	double kAngleThetaConstant= 1.2;
-	double kTurnSpeedCap=.4;
-	double kTurnSpeedMin=.2;
+	double kTurnSpeedCap=.3;
+	double kTurnSpeedMin=.1;
 	double kTriggerThreshold=.1;
 	double kTurnRightFullDegrees= 1.0;
 	double kNoAngle=0.0;

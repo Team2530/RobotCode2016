@@ -287,15 +287,17 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 		}
 		return done;
 	}
+	void Autonomous::reset(){
+		step=1;
+	}
 	void Autonomous::test(){
 		isDone=false;
 		if (step==1){
-			std::printf("Step 1");
-			isDone = robotd->turnRight(90);
+			isDone = robotd->turnLeft(90);
 			nextStep(isDone);
 		}
 		if (step==2){
-			robotd->DriveSet(0,0);
+
 		}
 		/*if (step==1){
 			isDone=robotd->turnLeft(xangle); //or turn left based on position

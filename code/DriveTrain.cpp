@@ -78,8 +78,11 @@ DriveTrain::DriveTrain() {
 		float throttle = getThrottle(kThrottleMinimum); //minimum value for throttle in (min, 1)
 		//if x is pressed let operator pivot
 		if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kXbutton)){
-			myRobot->Drive(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSXAxis),kTurnRightFullDegrees);
+			myRobot->Drive(0.5 * xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSXAxis),kTurnRightFullDegrees);
 		}//otherwise drive with each stick controlling the robot
+		else if (rightStick->GetRawButton(2)){
+			driveDistance(50,rightStick->GetY()*-1);
+		}
 		else{
 			myRobot->TankDrive(leftStick->GetY()*throttle*-1, rightStick->GetY()*throttle*-1, true);
 		}
@@ -108,6 +111,8 @@ DriveTrain::DriveTrain() {
 		else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kAbutton)){
 			servo->Set(kServoShoot);
 		}
+
+
 		camera->cameraTeleop();
 		//lift boulder at left analog stick speed
 		shooter->angleBall(xBox->GetRawAxis(ControllerConstants::xBoxAxisMap::kLSYAxis));
@@ -135,7 +140,7 @@ DriveTrain::DriveTrain() {
 		if (step==2){
 			double changeInAngle= ((ahrs->GetAngle()-kOppositeAngle)-angleStart);
 			if (leftEncoder->GetDistance()< distanceInches && leftEncoder->GetDistance()> -distanceInches && rightEncoder->GetDistance()< distanceInches && rightEncoder->GetDistance()>-distanceInches){
-				myRobot->Drive(-speed, changeInAngle/kChangeInAngleConstant);
+				myRobot->Drive(speed, changeInAngle/kChangeInAngleConstant);
 			}
 			else{
 				myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
@@ -170,7 +175,7 @@ DriveTrain::DriveTrain() {
 		}
 		if (step==2){
 			angleTheta= stopAngle-ahrs->GetAngle();
-			if (angleTheta<=kNoAngle){
+			if (angleTheta<=-180){
 				angleTheta= (stopAngle+kFullCircle);
 				std::printf("angle set to stop+Full circle\n");
 			}
@@ -183,7 +188,7 @@ DriveTrain::DriveTrain() {
 				speed=kTurnSpeedMin;
 				std::printf("speed set to speed min\n");
 			}
-			if (startAngle<stopAngle){
+			/*if (startAngle<stopAngle){
 				if (ahrs->GetAngle()<stopAngle){
 					myRobot->Drive(speed,1.0);
 					std::printf("DRIVE A VECTOR\n");
@@ -195,9 +200,9 @@ DriveTrain::DriveTrain() {
 					done= true;
 					std::printf("done");
 				}
-			}
-			else{
-				if (ahrs->GetAngle()>=startAngle||ahrs->GetAngle()<stopAngle){
+			}*/
+			//else{
+				if (angleTheta>0){
 					myRobot->Drive(speed,1.0);
 					std::printf("consider the other case\n");
 				}
@@ -210,7 +215,7 @@ DriveTrain::DriveTrain() {
 			}
 
 
-		}
+
 		SmartDashboard::PutNumber("Current Angle", ahrs->GetAngle());
 		SmartDashboard::PutNumber("StartAngle", startAngle);
 		SmartDashboard::PutNumber("Stop Angle", stopAngle);
@@ -221,6 +226,7 @@ DriveTrain::DriveTrain() {
 	//turn left until stop angle is reached; slow down as angle approaches
 	bool DriveTrain::turnLeft(double angle){
 		if (step==1){
+			ahrs->Reset();
 					startAngle= ahrs->GetAngle();
 					stopAngle= startAngle-angle;
 					if (stopAngle<kNoAngle){
@@ -229,36 +235,36 @@ DriveTrain::DriveTrain() {
 					step++;
 				}
 		if(step==2){
-		angleTheta= ahrs->GetAngle()-stopAngle;
-				if (angleTheta<=kNoAngle){
-					angleTheta= (stopAngle+kFullCircle);
-				}
-				speed= angleTheta/(kAngleThetaConstant*angle);
-				if (speed>kTurnSpeedCap){
-					speed=kTurnSpeedCap;
-				}
-				if (speed<kTurnSpeedMin){
-					speed=kTurnSpeedMin;
-				}
-				if (stopAngle<startAngle){
-					if (stopAngle<ahrs->GetAngle()){
-						myRobot->Drive(speed,-kTurnRightFullDegrees); //TankDrive(-,+)
-					}
-					else{
-						myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
-						done = true;
-					}
+			angleTheta= ahrs->GetAngle()-stopAngle;
+			if (angleTheta<=-180){
+				angleTheta= (stopAngle+kFullCircle);
+			}
+			speed= angleTheta/(kAngleThetaConstant*angle);
+			if (speed>kTurnSpeedCap){
+				speed=kTurnSpeedCap;
+			}
+			if (speed<kTurnSpeedMin){
+				speed=kTurnSpeedMin;
+			}
+			/*if (stopAngle<startAngle){
+				if (stopAngle<ahrs->GetAngle()){
+					myRobot->Drive(speed,-kTurnRightFullDegrees); //TankDrive(-,+)
 				}
 				else{
-					if (ahrs->GetAngle()<startAngle||ahrs->GetAngle()>stopAngle){
-						myRobot->Drive(speed,-kTurnRightFullDegrees);
-					}
-					else{
+					myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+					done = true;
+				}
+			}*/
+			//else{
+				if (angleTheta>0){
+					myRobot->Drive(speed,-kTurnRightFullDegrees);
+				}
+				else{
 						myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 						done=true;
 					}
 				}
-		}
+
 		SmartDashboard::PutNumber("Current Angle2", ahrs->GetAngle());
 		SmartDashboard::PutNumber("StartAngle2", startAngle);
 		SmartDashboard::PutNumber("Stop Angle2", stopAngle);
