@@ -81,8 +81,8 @@ private:
 	}
 
 	void AutonomousPeriodic(){
-			//autonomous->driveOverDefense();
-		autonomous->test();
+			autonomous->driveOverDefense();
+		//autonomous->test();
 		SmartDashboard::PutString("selected", autoSelected);
 
 	}

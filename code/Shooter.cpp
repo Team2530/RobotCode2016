@@ -49,11 +49,20 @@ void Shooter::stopMotors(){
 //if limit switches are pressed, don't lift or lower towards those switches
 //otherwise, lift/lower as needed
 void Shooter::angleBall(float lifterSpeed){
-	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed>kStopMotors){
+	if (shooterEncoder->Get()<100){
+		kStopMotors=0;
+	}
+	else if (shooterEncoder->Get()<200){
+		kStopMotors=.02;
+	}
+	else{
+		kStopMotors=.06;
+	}
+	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed<kStopMotors){
 		leftLifter->Set(0);
 		rightLifter->Set(0);
 	}
-	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed< kStopMotors){
+	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed> kStopMotors){
 		leftLifter->Set(0);
 		rightLifter->Set(0);
 		shooterEncoder->Reset();
@@ -62,13 +71,17 @@ void Shooter::angleBall(float lifterSpeed){
 		leftLifter->Set(kStopMotors);
 		rightLifter->Set(kStopMotors);
 	}
-	else if((lifterSpeed>kLifterSpeedCap) || (lifterSpeed<-kLifterSpeedCap)){
+	else if((lifterSpeed>kLifterSpeedCap)){
 		leftLifter->Set(kLifterSpeedCap);
 		rightLifter->Set(kLifterSpeedCap);
 	}
+	else if (lifterSpeed<-kLifterSpeedCap){
+		leftLifter->Set(-kLifterSpeedCap);
+		rightLifter->Set(-kLifterSpeedCap);
+	}
 	else{
-	leftLifter->Set(lifterSpeed);
-	rightLifter->Set(lifterSpeed);
+	leftLifter->Set(lifterSpeed+kStopMotors);
+	rightLifter->Set(lifterSpeed+kStopMotors);
 	SmartDashboard::PutNumber("angle", shooterEncoder->GetDistance());
 	}
 	SmartDashboard::PutNumber("lifterpower", lifterSpeed);
@@ -86,10 +99,10 @@ bool Shooter::setAngle(double angle){
 		return true;
 	}
 	else if (shooterEncoder->Get()*kEncoderAngleVal>angle){
-		angleBall(-kAngleBallSpeed);
+		angleBall(kAngleBallSpeed);
 	}
 	else if (shooterEncoder->Get()*kEncoderAngleVal<angle){
-		angleBall(kAngleBallSpeed);
+		angleBall(-kAngleBallSpeed);
 	}
 	else{
 		angleBall(kStopMotors);

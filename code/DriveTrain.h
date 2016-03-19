@@ -56,7 +56,7 @@ class DriveTrain {
 	double kFullCircle= 360;
 	double kAngleThetaConstant= 1.2;
 	double kTurnSpeedCap=.3;
-	double kTurnSpeedMin=.1;
+	double kTurnSpeedMin=.18;
 	double kTriggerThreshold=.1;
 	double kTurnRightFullDegrees= 1.0;
 	double kNoAngle=0.0;

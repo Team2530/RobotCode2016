@@ -24,13 +24,13 @@ class Shooter {
 
 	double kDefaultEncoderPulseVal=1;
 	double kTakeInSpeed=.4f;
-	double kStopMotors= -0.04; //-.04
+	double kStopMotors= .06;
 	double kStopShooters= 0;
 	double kLifterSpeedCap = .2;
 	double kLifterSpeedMin =.075;
-	double kAngleErrorMargin= 3.0;
+	double kAngleErrorMargin= 10;
 	double kEncoderAngleVal= 1;
-	double kAngleBallSpeed= .09;
+	double kAngleBallSpeed= .2;
 
 public:
 	Shooter();

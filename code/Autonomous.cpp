@@ -293,8 +293,8 @@ Autonomous::Autonomous(DriveTrain *dt, std::string str) {
 	void Autonomous::test(){
 		isDone=false;
 		if (step==1){
-			isDone = robotd->turnLeft(90);
-			nextStep(isDone);
+			//isDone = robotd->setAngle(200);
+
 		}
 		if (step==2){
 
