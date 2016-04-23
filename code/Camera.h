@@ -25,7 +25,7 @@
  * connectivity issues after installation of navX-MXP sensor
  * all of the above are implemented but some are commented out due to necessity
  */
-	//GRIP to C++ and navx data monitor
+//GRIP to C++ and navx data monitor
 
 
 class Camera {
@@ -41,15 +41,15 @@ class Camera {
 	double kActualHeight =12;
 	double kConstantPixelHeight=37;
 	float kMaxArea=0;
-    int kMaxAreaIndex =-1;
-   	int kI=0;
-   	int kContoursIndexCheck=-1;
-   	int kHeightWidth=0;
-   	int kError= -2;
-   	double kAngleError= 999;
-   	double kHalfPixelWidth= 160;
-   	double kRootConstant= 3;
-   	double kConstantConfusingNumber= 57.29577951;
+	int kMaxAreaIndex =-1;
+	int kI=0;
+	int kContoursIndexCheck=-1;
+	int kHeightWidth=0;
+	int kError= -2;
+	double kAngleError= 999;
+	double kHalfPixelWidth= 160;
+	double kRootConstant= 3;
+	double kConstantConfusingNumber= 57.29577951;
 
 public:
 

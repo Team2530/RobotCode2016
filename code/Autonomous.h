@@ -19,7 +19,7 @@ class Autonomous {
 	std::string autoMode;
 	double xangle;
 	double imageDistance;
-	double kAutoSpeed=.6;
+	double kAutoSpeed=.85;
 	double kLowGoalAngle= 60;
 	double kServoShootAngle=130;
 	double kAutoShootSpeed=.8;
@@ -37,6 +37,7 @@ public:
 	bool nextStep(bool);
 	void test();
 	void reset();
+	void setSelected(std::string);
 };
 
 

@@ -14,8 +14,13 @@
  * INCLUDES ALL OTHER OBJECTS
  */
 
+
 class Robot: public IterativeRobot{
 private:
+
+	/*declare string constants for sendable chooser and auto modes
+	 * add pointers for necessary auto/telop objects
+	 */
 	LiveWindow *lw = LiveWindow::GetInstance();
 	SendableChooser *chooser;
 	SendableChooser *chooser2;
@@ -28,21 +33,34 @@ private:
 	const std::string autoNameP3= "P3 High";
 	const std::string autoNameP4= "P4 High";
 	const std::string autoNameP5= "P5 High";
+	const std::string autoNameRW= "Rock Wall or Moat";
 	std::string autoSelected;
+	std::string testSelected;
 
 	Autonomous *autonomous;
 	DriveTrain *Drive;
-	const std::string autoNameTest1= "test 1";
-	const std::string autoNameTest2= "test 2";
+	const std::string autoNameTest1= "right turn Test";
+	const std::string autoNameTest2= "left turn Test";
+	const std::string autoNameTest3= "drive distance test";
+	const std::string autoNameTest4= "angle ball test";
 
+
+
+	/*Initializes objects necessary for teleop
+	 * Adds options to sendable chooser on SmartDashboard
+	 */
 	void RobotInit(){
 		/*if (fork()==0){
 			system("/home/lvuser/start_vision &");
 		}*/
 
+		//creates DriveTrain and sendable choosers
 		Drive= new DriveTrain();
 		chooser = new SendableChooser();
 		chooser2 = new SendableChooser();
+
+
+		//adds options to both
 		chooser->AddDefault(autoNamedN, (void*)&autoNamedN);
 		chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
 		chooser->AddObject(autoNameRight, (void*)&autoNameRight);
@@ -52,12 +70,20 @@ private:
 		chooser->AddObject(autoNameP3, (void*)&autoNameP3);
 		chooser->AddObject(autoNameP4, (void*)&autoNameP4);
 		chooser->AddObject(autoNameP5, (void*)&autoNameP5);
+		chooser->AddObject(autoNameRW, (void*)&autoNameRW);
 		SmartDashboard::PutData("Auto Modes", chooser);
+
 
 		chooser2->AddDefault(autoNameTest1, (void*)&autoNameTest1);
 		chooser2->AddObject(autoNameTest2, (void*)&autoNameTest2);
+		chooser2->AddObject(autoNameTest3, (void*)&autoNameTest3);
+		chooser2->AddObject(autoNameTest4, (void*)&autoNameTest4);
 		SmartDashboard::PutData("Auto Modes 2", chooser2);
+		Drive->AutonomousInit();
 		autonomous = new Autonomous(Drive, *((std::string*)chooser->GetSelected()));
+
+		//passes driveTrain and sendable chooser option to Autonomous class and creates it!
+
 	}
 
 
@@ -70,9 +96,15 @@ private:
 	 * You can add additional auto modes by adding additional comparisons to the if-else structure below with additional strings.
 	 * If using the SendableChooser make sure to add them to the chooser code above as well.
 	 */
-	void AutonomousInit(){
-		autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
 
+
+	/*
+	 * chooses the options from the auto modes, resets encoders/navX/step/timer
+	 */
+	void AutonomousInit(){
+		autonomous->setSelected(*((std::string*)chooser->GetSelected()));
+		autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
+		testSelected= SmartDashboard::GetString("Auto Selector", *((std::string*)chooser2->GetSelected()));
 
 		Drive->AutonomousInit();
 		autonomous->startTimer();
@@ -80,22 +112,47 @@ private:
 
 	}
 
+	/*
+	 * Checks if the string from the Auto Modes meets any of the constants above. If so, it runs that Auto Mode.
+	 * Right now has testing modes, but autonomous->driveOverDefense(); will do the checking for us.
+	 */
 	void AutonomousPeriodic(){
-			autonomous->driveOverDefense();
+		autonomous->driveOverDefense();
 		//autonomous->test();
-		SmartDashboard::PutString("selected", autoSelected);
+
+		/*if (testSelected.compare("right turn Test")==0){
+			Drive->turnRight(90);
+		}
+		else if (testSelected.compare("left turn Test")==0){
+			Drive->turnLeft(90);
+		}
+		else if (testSelected.compare("drive distance test")==0){
+			Drive->driveDistance(50, .6); //-.6?
+		}
+		else if (testSelected.compare("angle ball test")==0){
+			Drive->setAngle(260);
+			SmartDashboard::PutString("x", "f");
+		}
+
+		SmartDashboard::PutString("selected", autoSelected);*/
 
 	}
 
+	/*
+	 * resets encoders, step, navX, and starts the spike relay
+	 */
 	void TeleopInit(){
 		Drive->TeleopInit();
+		autonomous->reset();
 	}
 
+	//completes all necessary functions for teleop driving/operating
 	void TeleopPeriodic(){
 		Drive->Drive();
 
 	}
 
+	//This is not used.
 	void TestPeriodic(){
 		lw->Run();
 	}

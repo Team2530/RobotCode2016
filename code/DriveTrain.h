@@ -13,10 +13,10 @@
 
 class DriveTrain {
 
-	Victor *vic1;
-	Victor *vic2;
-	Victor *vic3;
-	Victor *vic4;
+	VictorSP *vic1;
+	VictorSP *vic2;
+	VictorSP *vic3;
+	VictorSP *vic4;
 	Relay *spike;
 	Servo *servo;
 
@@ -45,8 +45,8 @@ class DriveTrain {
 	bool done;
 	bool leftTurn=true;
 
-	double kLeftDistancePerPulse= 1;// -1*3.14159*8/432;
-	double kRightDistancePerPulse= 1;//3.14159*8/630;
+	double kLeftDistancePerPulse= -1*3.14159*8/432;
+	double kRightDistancePerPulse= 3.14159*8/630;
 	double kThrottleMinimum = .4;
 	double kServoRest=130;
 	double kServoShoot=0;
@@ -75,7 +75,7 @@ public:
 	bool driveDistance(int,float);
 
 	double getChangeTheta();
-	bool turnRight(double);
+	bool turnRight(double);  // input is angle in degrees.
 	bool turnLeft(double);
 	void setServo(float);
 	void driveShoot(double);

@@ -11,8 +11,8 @@
 //instantiates shooter motors, lifer motors, limit switches, and
 Shooter::Shooter() {
 	//check ports
-	leftShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM6);
-	rightShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM7);
+	leftShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM7);
+	rightShooter= new TalonSRX(ControllerConstants::PWMPort::kPWM6);
 
 	leftLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM4);
 	rightLifter= new TalonSRX(ControllerConstants::PWMPort::kPWM5);
@@ -20,10 +20,10 @@ Shooter::Shooter() {
 	shooterEncoder->SetDistancePerPulse(kDefaultEncoderPulseVal);// take ticks from 90-0, div 90
 	shooterEncoder->Reset();
 	//check ports
-	low1= new DigitalInput(ControllerConstants::DIOPort::kDIO8);
-	low2= new DigitalInput(ControllerConstants::DIOPort::kDIO9);
-	high1= new DigitalInput(ControllerConstants::DIOPort::kDIO6);
-	high2= new DigitalInput(ControllerConstants::DIOPort::kDIO7);
+	low1= new DigitalInput(ControllerConstants::DIOPort::kDIO6);
+	low2= new DigitalInput(ControllerConstants::DIOPort::kDIO7);
+	high1= new DigitalInput(ControllerConstants::DIOPort::kDIO8);
+	high2= new DigitalInput(ControllerConstants::DIOPort::kDIO9);
 
 }
 
@@ -50,26 +50,26 @@ void Shooter::stopMotors(){
 //otherwise, lift/lower as needed
 void Shooter::angleBall(float lifterSpeed){
 	if (shooterEncoder->Get()<100){
-		kStopMotors=0;
+		StopMotors=0;
 	}
 	else if (shooterEncoder->Get()<200){
-		kStopMotors=.02;
+		StopMotors=-.02;
 	}
 	else{
-		kStopMotors=.06;
+		StopMotors=-.06;
 	}
-	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed<kStopMotors){
+	if (lowStop(low1->Get(),low2->Get()) && lifterSpeed>0){
 		leftLifter->Set(0);
 		rightLifter->Set(0);
 	}
-	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed> kStopMotors){
+	else if (highStop(high1->Get(), high2->Get()) && lifterSpeed< 0){
 		leftLifter->Set(0);
 		rightLifter->Set(0);
 		shooterEncoder->Reset();
 	}
 	else if ((lifterSpeed<kLifterSpeedMin && lifterSpeed>-kLifterSpeedMin)){
-		leftLifter->Set(kStopMotors);
-		rightLifter->Set(kStopMotors);
+		leftLifter->Set(StopMotors);
+		rightLifter->Set(StopMotors);
 	}
 	else if((lifterSpeed>kLifterSpeedCap)){
 		leftLifter->Set(kLifterSpeedCap);
@@ -80,9 +80,9 @@ void Shooter::angleBall(float lifterSpeed){
 		rightLifter->Set(-kLifterSpeedCap);
 	}
 	else{
-	leftLifter->Set(lifterSpeed+kStopMotors);
-	rightLifter->Set(lifterSpeed+kStopMotors);
-	SmartDashboard::PutNumber("angle", shooterEncoder->GetDistance());
+		leftLifter->Set(lifterSpeed+StopMotors);
+		rightLifter->Set(lifterSpeed+StopMotors);
+		SmartDashboard::PutNumber("angle", shooterEncoder->GetDistance());
 	}
 	SmartDashboard::PutNumber("lifterpower", lifterSpeed);
 	SmartDashboard::PutNumber("encoder angle", shooterEncoder->Get()*kEncoderAngleVal);
@@ -90,28 +90,31 @@ void Shooter::angleBall(float lifterSpeed){
 
 
 bool Shooter::setAngle(double angle){
-	 double angleDiff=angle- shooterEncoder->Get()*kEncoderAngleVal;
-	 if (angleDiff<0){
-		 angleDiff*=-1;
-	 }
+	double angleDiff=angle- shooterEncoder->Get()*kEncoderAngleVal;
+	if (angleDiff<0){
+		angleDiff*=-1;
+	}
 	if ((kAngleErrorMargin>= angleDiff)){
-		angleBall(kStopMotors);
+		angleBall(StopMotors);
 		return true;
 	}
 	else if (shooterEncoder->Get()*kEncoderAngleVal>angle){
-		angleBall(kAngleBallSpeed);
-	}
-	else if (shooterEncoder->Get()*kEncoderAngleVal<angle){
 		angleBall(-kAngleBallSpeed);
 	}
+	else if (shooterEncoder->Get()*kEncoderAngleVal<angle){
+		angleBall(kAngleBallSpeed);
+	}
 	else{
-		angleBall(kStopMotors);
+		angleBall(StopMotors);
 		return true;
 	}
 	return false;
 }
+
+
+//if the low or high motors are pressed, return true so that the lifter doesn't move towards them.
 bool Shooter::lowStop(bool l1, bool l2){
-	if (l1||l2){
+	if (l1&&l2){
 		return false;
 	}
 	else{
@@ -119,10 +122,15 @@ bool Shooter::lowStop(bool l1, bool l2){
 	}
 }
 bool Shooter::highStop(bool h1, bool h2){
-	if (h1||h2){
+	if (h1&&h2){
 		return false;
 	}
 	else{
 		return true;
 	}
+}
+
+//resets the encoder for reading the lifter angle
+void Shooter::resetEncoder(){
+	shooterEncoder->Reset();
 }

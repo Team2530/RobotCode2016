@@ -23,8 +23,8 @@ class Shooter {
 	double angleDiff;
 
 	double kDefaultEncoderPulseVal=1;
-	double kTakeInSpeed=.4f;
-	double kStopMotors= .06;
+	double kTakeInSpeed=.3f;
+	double StopMotors= -.06;
 	double kStopShooters= 0;
 	double kLifterSpeedCap = .2;
 	double kLifterSpeedMin =.075;
@@ -42,6 +42,7 @@ public:
 	bool setAngle(double);
 	bool lowStop(bool, bool);
 	bool highStop(bool, bool);
+	void resetEncoder();
 
 };
 
