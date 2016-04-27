@@ -19,6 +19,7 @@ class Autonomous {
 	std::string autoMode;
 	double xangle;
 	double imageDistance;
+
 	double kAutoSpeed=.85;
 	double kLowGoalAngle= 60;
 	double kServoShootAngle=130;
@@ -31,6 +32,14 @@ public:
 	void doNothing();
 	void startTimer();
 	void driveOverDefense();
+	void rockWallOrMoat();
+	void leftLowGoal();
+	void rightLowGoal();
+	void p1High();
+	void p2High();
+	void p3High();
+	void p4High();
+	void p5High();
 	void turnRight(double);
 	bool attackTower(std::string);
 	double getTime();
@@ -38,6 +47,7 @@ public:
 	void test();
 	void reset();
 	void setSelected(std::string);
+
 };
 
 

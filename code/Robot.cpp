@@ -24,7 +24,7 @@ private:
 	LiveWindow *lw = LiveWindow::GetInstance();
 	SendableChooser *chooser;
 	SendableChooser *chooser2;
-	const std::string autoNamedN = "Do Nothing";
+	const std::string DoNothing = "Do Nothing";
 	const std::string autoNameLeft = "Left Low Goal";
 	const std::string autoNameRight = "Right Low Goal";
 	const std::string autoNameOver= "Drive Over Defense";
@@ -61,7 +61,7 @@ private:
 
 
 		//adds options to both
-		chooser->AddDefault(autoNamedN, (void*)&autoNamedN);
+		chooser->AddDefault(DoNothing, (void*)&DoNothing);
 		chooser->AddObject(autoNameLeft, (void*)&autoNameLeft);
 		chooser->AddObject(autoNameRight, (void*)&autoNameRight);
 		chooser->AddObject(autoNameOver, (void*)&autoNameOver);
@@ -87,24 +87,13 @@ private:
 	}
 
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
-	 * using the dashboard. The sendable chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
-	 * Dashboard, remove all of the chooser code and uncomment the GetString line to get the auto name from the text box
-	 * below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the if-else structure below with additional strings.
-	 * If using the SendableChooser make sure to add them to the chooser code above as well.
-	 */
 
-
-	/*
-	 * chooses the options from the auto modes, resets encoders/navX/step/timer
-	 */
 	void AutonomousInit(){
 		autonomous->setSelected(*((std::string*)chooser->GetSelected()));
-		autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
-		testSelected= SmartDashboard::GetString("Auto Selector", *((std::string*)chooser2->GetSelected()));
+		//autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
+		autoSelected = *((std::string*)chooser->GetSelected());
+		//testSelected= SmartDashboard::GetString("Auto Selector", *((std::string*)chooser2->GetSelected()));
+		testSelected = *((std::string*)chooser2->GetSelected());
 
 		Drive->AutonomousInit();
 		autonomous->startTimer();
@@ -118,23 +107,56 @@ private:
 	 */
 	void AutonomousPeriodic(){
 		autonomous->driveOverDefense();
+		const double kModesEqual=0;
 		//autonomous->test();
+		SmartDashboard::PutString("Auto Selected", autoSelected);
+		if (autoSelected.compare(DoNothing)==kModesEqual){
+			autonomous->doNothing();
+			SmartDashboard::PutString("DN TEST", "Done");
+		}
+		else if (autoSelected.compare("Drive Over Defense")==kModesEqual){
+			autonomous->driveOverDefense();
 
-		/*if (testSelected.compare("right turn Test")==0){
-			Drive->turnRight(90);
 		}
-		else if (testSelected.compare("left turn Test")==0){
-			Drive->turnLeft(90);
+		else if (autoSelected.compare(autoNameRW)==kModesEqual){
+
+			autonomous->rockWallOrMoat();
 		}
-		else if (testSelected.compare("drive distance test")==0){
-			Drive->driveDistance(50, .6); //-.6?
+		else if (autoSelected.compare(autoNameLeft)==kModesEqual){
+
+
+			autonomous->leftLowGoal();
 		}
-		else if (testSelected.compare("angle ball test")==0){
-			Drive->setAngle(260);
-			SmartDashboard::PutString("x", "f");
+		else if (autoSelected.compare(autoNameRight)==kModesEqual){
+
+			autonomous->rightLowGoal();
+
+		}
+		else if (autoSelected.compare(autoNameP1)==kModesEqual){
+
+			autonomous->p1High();
 		}
 
-		SmartDashboard::PutString("selected", autoSelected);*/
+		else if (autoSelected.compare(autoNameP2)==kModesEqual){
+
+			autonomous->p2High();
+		}
+
+		else if (autoSelected.compare(autoNameP3)==kModesEqual){
+
+			autonomous->p3High();
+		}
+		else if (autoSelected.compare(autoNameP4)==kModesEqual){
+
+			autonomous->p4High();
+		}
+
+
+		else if (autoSelected.compare(autoNameP5)==kModesEqual){
+			autonomous->p5High();
+
+		}
+
 
 	}
 
