@@ -82,6 +82,7 @@ public:
 	double getTargetD();
 	double getTargetA();
 	bool setAngle(double);
+	void stayAtTheTop();
 };
 
 #endif /* SRC_DRIVETRAIN_H_ */

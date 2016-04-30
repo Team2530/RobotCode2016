@@ -160,22 +160,24 @@ bool DriveTrain::driveDistance(int distanceInches, float speed){
 	//find difference in this angle from angle last loop and drive opposite of that; keep driving until distance is reached
 	if (step==2){
 		double changeInAngle= ((ahrs->GetAngle()-kOppositeAngle)-angleStart);
-		if (leftEncoder->GetDistance()< distanceInches && leftEncoder->GetDistance()> -distanceInches && rightEncoder->GetDistance()< distanceInches && rightEncoder->GetDistance()>-distanceInches){
+		if (leftEncoder->GetDistance()< distanceInches
+				&& leftEncoder->GetDistance() > -distanceInches
+				&& rightEncoder->GetDistance() < distanceInches
+				&& rightEncoder->GetDistance() > -distanceInches){
 			myRobot->ArcadeDrive(speed, changeInAngle/kChangeInAngleConstant);
 		}
 		else{
 			myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
 			step = 1;
 			done =true;
-
-
 		}
+
 		SmartDashboard::PutNumber("left distance Auto", leftEncoder->GetDistance());
 		SmartDashboard::PutNumber("right distance Auto", rightEncoder->GetDistance());
 		SmartDashboard::PutNumber("changeInAngle", changeInAngle/kChangeInAngleConstant);
 	}
-	return done;
 
+	return done;
 }
 
 //flip servo so boulder goes through shooter
@@ -315,4 +317,7 @@ bool DriveTrain::setAngle(double theta){
 	bool isDoneNow=false;
 	isDoneNow= shooter->setAngle(theta);
 	return isDoneNow;
+}
+void DriveTrain::stayAtTheTop(){
+	shooter->stayAtTheTop();
 }
