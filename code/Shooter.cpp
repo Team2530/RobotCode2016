@@ -24,7 +24,7 @@ Shooter::Shooter() {
 	low2= new DigitalInput(ControllerConstants::DIOPort::kDIO7);
 	high1= new DigitalInput(ControllerConstants::DIOPort::kDIO8);
 	high2= new DigitalInput(ControllerConstants::DIOPort::kDIO9);
-
+	atTheTop = true;
 }
 
 //shoots boulder at specified speed
@@ -66,6 +66,7 @@ void Shooter::angleBall(float lifterSpeed){
 		leftLifter->Set(0);
 		rightLifter->Set(0);
 		shooterEncoder->Reset();
+		atTheTop = true;
 	}
 	else if ((lifterSpeed<kLifterSpeedMin && lifterSpeed>-kLifterSpeedMin)){
 		leftLifter->Set(StopMotors);
@@ -84,10 +85,26 @@ void Shooter::angleBall(float lifterSpeed){
 		rightLifter->Set(lifterSpeed+StopMotors);
 		SmartDashboard::PutNumber("angle", shooterEncoder->GetDistance());
 	}
-	SmartDashboard::PutNumber("lifterpower", lifterSpeed);
+	if (lifterSpeed > 0){
+		atTheTop = false;
+	}
+		SmartDashboard::PutNumber("lifterpower", lifterSpeed);
 	SmartDashboard::PutNumber("encoder angle", shooterEncoder->Get()*kEncoderAngleVal);
 }
 
+void Shooter::stayAtTheTop(){
+
+	if (highStop(high1->Get(), high2->Get()) && atTheTop) {
+		leftLifter->Set(0);
+		rightLifter->Set(0);
+
+
+	}
+	else if (highStop(high1->Get(), high2->Get()) ==false && atTheTop){
+		leftLifter->Set(-kLifterSpeedCap);
+		rightLifter->Set(-kLifterSpeedCap);
+	}
+}
 
 bool Shooter::setAngle(double angle){
 	double angleDiff=angle- shooterEncoder->Get()*kEncoderAngleVal;

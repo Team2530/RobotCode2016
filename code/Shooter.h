@@ -32,6 +32,8 @@ class Shooter {
 	double kEncoderAngleVal= 1;
 	double kAngleBallSpeed= .2;
 
+	bool atTheTop;
+
 public:
 	Shooter();
 	void shoot(float);
@@ -43,6 +45,7 @@ public:
 	bool lowStop(bool, bool);
 	bool highStop(bool, bool);
 	void resetEncoder();
+	void stayAtTheTop();
 
 };
 

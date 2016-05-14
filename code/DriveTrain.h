@@ -20,7 +20,7 @@ class DriveTrain {
 	Relay *spike;
 	Servo *servo;
 
-	PIDController *turnController;
+	//**check if this is needed: PIDController *turnController;
 	Joystick *leftStick;
 	Joystick *rightStick;
 	Joystick *xBox;
@@ -45,11 +45,11 @@ class DriveTrain {
 	bool done;
 	bool leftTurn=true;
 
-	double kLeftDistancePerPulse= -1*3.14159*8/432;
-	double kRightDistancePerPulse= 3.14159*8/630;
+	double kLeftDistancePerPulse= -1*3.14159*8/339;
+	double kRightDistancePerPulse= 3.14159*8/230;
 	double kThrottleMinimum = .4;
-	double kServoRest=130;
-	double kServoShoot=0;
+	const double kServoRest=155;
+	const double kServoShoot=0;
 	double kshoot100=1;
 	double kOppositeAngle =180;
 	double kChangeInAngleConstant= 80;

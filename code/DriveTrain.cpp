@@ -30,6 +30,8 @@ DriveTrain::DriveTrain() {
 	rightStick= new Joystick(ControllerConstants::USBJoystickPort::kUSB1);
 	xBox= new Joystick(ControllerConstants::USBJoystickPort::kUSB2);
 	servo= new Servo(ControllerConstants::PWMPort::kPWM8);
+	servo->SetAngle(kServoRest);
+
 	ahrs= new AHRS(SerialPort::kMXP);
 	step=1;
 	spike= new Relay(ControllerConstants::RelayPort::kRP0,Relay::Direction::kForwardOnly);
@@ -99,6 +101,7 @@ void DriveTrain::Drive(){
 	//else if (leftStick->GetRawButton(2)){
 		//	driveDistance(50,.75);
 		//}
+	//interesting. why is the left commented out but not the right?
 	else{
 		myRobot->TankDrive(leftStick->GetY()*throttle*-1, rightStick->GetY()*throttle*-1, true);
 		step=1;
@@ -115,18 +118,18 @@ void DriveTrain::Drive(){
 	//button LB takes in the ball and resets Servo
 	else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kLBbutton)){
 		shooter->takeInBall();
-		servo->Set(kServoRest);
+		servo->SetAngle(kServoRest);
 	}
 
 	//button Y stops motors and resets Servo
 	else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kYbutton)){
 		shooter->stopMotors();
-		servo->Set(kServoRest);
+		servo->SetAngle(kServoRest);
 	}
 
 	//button RB flicks servo to send ball through motors
 	else if (xBox->GetRawButton(ControllerConstants::xBoxButtonMap::kAbutton)){
-		servo->Set(kServoShoot);
+		servo->SetAngle(kServoShoot);
 	}
 
 
@@ -150,6 +153,7 @@ void DriveTrain::DriveSet(float speed, float angle){
 
 bool DriveTrain::driveDistance(int distanceInches, float speed){
 	//get start angle
+	done = false;
 	if (step==1){
 		angleStart= ahrs->GetAngle()-kOppositeAngle;
 		leftEncoder->Reset();
@@ -160,16 +164,20 @@ bool DriveTrain::driveDistance(int distanceInches, float speed){
 	//find difference in this angle from angle last loop and drive opposite of that; keep driving until distance is reached
 	if (step==2){
 		double changeInAngle= ((ahrs->GetAngle()-kOppositeAngle)-angleStart);
+		float backwardsDirection = 1.0;
+		if (speed < 0.0){
+			backwardsDirection = -1.0;
+		}
 		if (leftEncoder->GetDistance()< distanceInches
 				&& leftEncoder->GetDistance() > -distanceInches
 				&& rightEncoder->GetDistance() < distanceInches
 				&& rightEncoder->GetDistance() > -distanceInches){
-			myRobot->ArcadeDrive(speed, changeInAngle/kChangeInAngleConstant);
+			myRobot->Drive(speed, -backwardsDirection*changeInAngle/kChangeInAngleConstant);
 		}
 		else{
-			myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+			myRobot->Drive(kNoPower,kNoAngle);
 			step = 1;
-			done =true;
+			done = true;
 		}
 
 		SmartDashboard::PutNumber("left distance Auto", leftEncoder->GetDistance());
@@ -182,7 +190,7 @@ bool DriveTrain::driveDistance(int distanceInches, float speed){
 
 //flip servo so boulder goes through shooter
 void DriveTrain::setServo(float angle){
-	servo->Set(angle);
+	servo->SetAngle(angle);
 
 }
 
@@ -220,7 +228,7 @@ bool DriveTrain::turnRight(double angle){
 				SmartDashboard::PutNumber("CodeLocation", 1);
 			}
 			else{
-				myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+				myRobot->Drive(kNoPower,kNoAngle);
 				//std::printf("DRIVE IN ARCADE! LIKE CAVE JOHNSON/n");
 				SmartDashboard::PutNumber("CodeLocation", 2);
 				done= true;
@@ -234,7 +242,7 @@ bool DriveTrain::turnRight(double angle){
 				//std::printf("consider the other case\n");
 			}
 			else{
-				myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+				myRobot->Drive(kNoPower,kNoAngle);
 				done=true;
 				SmartDashboard::PutNumber("CodeLocation", 4);
 				//std::printf("done with other case\n");
@@ -253,6 +261,7 @@ bool DriveTrain::turnRight(double angle){
 
 //turn left until stop angle is reached; slow down as angle approaches
 bool DriveTrain::turnLeft(double angle){
+	done = false;
 	if (step==1){
 		ahrs->Reset();
 		startAngle= ahrs->GetAngle();
@@ -279,7 +288,7 @@ bool DriveTrain::turnLeft(double angle){
 				myRobot->Drive(speed,-kTurnRightFullDegrees); //TankDrive(-,+)
 			}
 			else{
-				myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+				myRobot->Drive(kNoPower,kNoAngle);
 				done = true;
 			}
 		}
@@ -288,7 +297,7 @@ bool DriveTrain::turnLeft(double angle){
 				myRobot->Drive(speed,-kTurnRightFullDegrees);
 			}
 			else{
-				myRobot->ArcadeDrive(kNoPower,kNoAngle,true);
+				myRobot->Drive(kNoPower,kNoAngle);
 				done=true;
 			}
 		}
@@ -318,6 +327,7 @@ bool DriveTrain::setAngle(double theta){
 	isDoneNow= shooter->setAngle(theta);
 	return isDoneNow;
 }
+
 void DriveTrain::stayAtTheTop(){
 	shooter->stayAtTheTop();
 }

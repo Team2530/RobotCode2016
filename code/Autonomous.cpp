@@ -34,15 +34,19 @@ void Autonomous::driveOverDefense(){
 	}
 }
 void Autonomous::rockWallOrMoat(){
+
 	int stepIndex=1;
-	if (step==(stepIndex++)){
+
+	if (step==(stepIndex++)) {
 		// negative speed means go backwards
 		isDone = robotd->driveDistance(140,(-kAutoSpeed)-.07);
+		nextStep(isDone);
 	}
 	else if (step==(stepIndex++)){
 		doNothing();
 	}
 }
+
 void Autonomous::leftLowGoal(){
 	/*low goal code:
 	 *drives specified distance at specified speed
@@ -67,6 +71,7 @@ void Autonomous::leftLowGoal(){
 	}
 	else if (step==(stepIndex++)){
 		isDone= robotd->driveDistance(40,kAutoSpeed);
+		nextStep(isDone);
 	}
 	else if (step==(stepIndex++)){
 		isDone= robotd->turnRight(kLowGoalAngle-5); //turnLeft if from right side
@@ -74,6 +79,7 @@ void Autonomous::leftLowGoal(){
 	}
 	else if (step==(stepIndex++)){
 		isDone= robotd->driveDistance(95, kAutoSpeed);
+		nextStep(isDone);
 	}
 	else if (step==(stepIndex++)){
 		robotd->driveShoot(1.0);
@@ -114,6 +120,7 @@ void Autonomous::rightLowGoal(){
 	}
 	else if (step==(stepIndex++)){
 		isDone= robotd->driveDistance(25, kAutoSpeed);
+		nextStep(isDone);
 	}
 	else if (step==(stepIndex++)){
 		robotd->driveShoot(1.0);
@@ -202,8 +209,8 @@ void Autonomous::p2High(){
 			robotd->setServo(kServoShootAngle);
 		}
 	}
+}
 
-	}
 void Autonomous::p3High(){
 	int stepIndex=1;
 	xangle= robotd->getTargetA(); //check function and add pointer to variable
@@ -345,6 +352,7 @@ bool Autonomous::nextStep(bool done){
 //resets the step for autonomous.cpp
 void Autonomous::reset(){
 	step=1;
+	isDone=false;
 }
 
 //Only used for testing a certain function from DriveTrain.cpp in Autonomous.cpp

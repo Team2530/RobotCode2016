@@ -89,15 +89,18 @@ private:
 
 
 	void AutonomousInit(){
+		SmartDashboard::PutString("AutonomousInit", "Autonomous Init Reached");
 		autonomous->setSelected(*((std::string*)chooser->GetSelected()));
 		//autoSelected = SmartDashboard::GetString("Auto Selector", *((std::string*)chooser->GetSelected()));
 		autoSelected = *((std::string*)chooser->GetSelected());
+		SmartDashboard::PutString("Auto Selected", autoSelected);
 		//testSelected= SmartDashboard::GetString("Auto Selector", *((std::string*)chooser2->GetSelected()));
 		testSelected = *((std::string*)chooser2->GetSelected());
 
 		Drive->AutonomousInit();
 		autonomous->startTimer();
 		autonomous->reset();
+
 
 	}
 
@@ -106,15 +109,15 @@ private:
 	 * Right now has testing modes, but autonomous->driveOverDefense(); will do the checking for us.
 	 */
 	void AutonomousPeriodic(){
-		autonomous->driveOverDefense();
-		const double kModesEqual=0;
+		//autonomous->driveOverDefense();
+		const int kModesEqual=0;
 		//autonomous->test();
-		SmartDashboard::PutString("Auto Selected", autoSelected);
+
 		if (autoSelected.compare(DoNothing)==kModesEqual){
 			autonomous->doNothing();
 			SmartDashboard::PutString("DN TEST", "Done");
 		}
-		else if (autoSelected.compare("Drive Over Defense")==kModesEqual){
+		else if (autoSelected.compare(autoNameOver)==kModesEqual){
 			autonomous->driveOverDefense();
 
 		}
@@ -157,6 +160,7 @@ private:
 
 		}
 
+		Drive->stayAtTheTop();
 
 	}
 
@@ -171,6 +175,7 @@ private:
 	//completes all necessary functions for teleop driving/operating
 	void TeleopPeriodic(){
 		Drive->Drive();
+		Drive->stayAtTheTop();
 
 	}
 
